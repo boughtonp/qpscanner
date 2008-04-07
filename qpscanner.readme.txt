@@ -66,4 +66,16 @@ qpScanner makes use of two other open-source projects:
 
 
 
+
+LICENSING
+=========
+
+qpScanner and jre-utils are released under the modified BSD license.
+(see included bsd-license.txt for details)
+
+jQuery is used under the MIT license.
+(see included mit-license.txt for details)
+
+
+
 -------------------------------------------------------------------------------
