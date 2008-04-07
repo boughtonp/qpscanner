@@ -65,11 +65,11 @@
 
 	<cffunction name="get" returntype="Array" output="false" access="public">
 		<cfargument name="Text"    type="String"/>
-		<cfargument name="Pattern" type="String"/>
+		<cfargument name="Regex"   type="String"/>
 		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
 
 		<cfset var Pattern = CreateObject("java","java.util.regex.Pattern")
-			.Compile( Arguments.Pattern , parseFlags(Arguments.Flags) )/>
+			.Compile( Arguments.Regex , parseFlags(Arguments.Flags) )/>
 		<cfset var Matcher = Pattern.Matcher(Arguments.Text)/>
 		<cfset var Matches = ArrayNew(1)/>
 
@@ -84,12 +84,12 @@
 
 	<cffunction name="getNoCase" returntype="Array" output="false" access="public">
 		<cfargument name="Text"    type="String"/>
-		<cfargument name="Pattern" type="String"/>
+		<cfargument name="Regex"   type="String"/>
 		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
 
 		<cfreturn This.get
 			( Text    : Arguments.Text
-			, Pattern : Arguments.Pattern
+			, Pattern : Arguments.Regex
 			, Flags   : BitOr( Arguments.Flags , This.Flags.CASE_INSENSITIVE )
 			)/>
 	</cffunction>
@@ -99,7 +99,7 @@
 
 	<cffunction name="_replace" returntype="String" output="false" access="public">
 		<cfargument name="Text"        type="String"/>
-		<cfargument name="Pattern"     type="String"/>
+		<cfargument name="Regex"       type="String"/>
 		<cfargument name="Replacement" type="Any"    hint="String or UDF"/>
 		<cfargument name="Scope"       type="String" default="ONE" hint="ONE,ALL"/>
 
@@ -120,14 +120,14 @@
 
 			<cfset String = CreateObject("java","java.lang.String").Init(Arguments.Text)/>
 			<cfif Arguments.Scope EQ "ALL">
-				<cfreturn String.ReplaceAll(Arguments.Pattern,Arguments.Replacement)/>
+				<cfreturn String.ReplaceAll(Arguments.Regex,Arguments.Replacement)/>
 			<cfelse>
-				<cfreturn String.ReplaceFirst(Arguments.Pattern,Arguments.Replacement)/>
+				<cfreturn String.ReplaceFirst(Arguments.Regex,Arguments.Replacement)/>
 			</cfif>
 
 		<cfelse>
 
-			<cfset Pattern = CreateObject("java","java.util.regex.Pattern").Compile(Arguments.Pattern)/>
+			<cfset Pattern = CreateObject("java","java.util.regex.Pattern").Compile(Arguments.Regex)/>
 			<cfset Matcher = Pattern.Matcher( Arguments.Text )/>
 			<cfset Results = CreateObject("java","java.lang.StringBuffer").Init()/>
 
