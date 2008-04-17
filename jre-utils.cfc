@@ -118,7 +118,7 @@
 				<cfset Arguments.Replacement = Replace(Arguments.Replacement,Chr(65536),'\$','all')/>
 			</cfif>
 
-			<cfset String = CreateObject("java","java.lang.String").Init(Arguments.Text)/>
+			<cfset String = CreateObject("java","java.lang.String").init(Arguments.Text)/>
 			<cfif Arguments.Scope EQ "ALL">
 				<cfreturn String.ReplaceAll(Arguments.Regex,Arguments.Replacement)/>
 			<cfelse>
@@ -129,7 +129,7 @@
 
 			<cfset Pattern = CreateObject("java","java.util.regex.Pattern").Compile(Arguments.Regex)/>
 			<cfset Matcher = Pattern.Matcher( Arguments.Text )/>
-			<cfset Results = CreateObject("java","java.lang.StringBuffer").Init()/>
+			<cfset Results = CreateObject("java","java.lang.StringBuffer").init()/>
 
 			<cfloop condition="Matcher.Find()">
 
