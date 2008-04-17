@@ -19,8 +19,8 @@
 	<cfset var Result = StructNew()/>
 	<cfset var UniqueToken = Chr(65536)/>
 
-	<cfset var reFindQueries     = "(?s)(?<=(<cfquery[^p][^>]{0,300}>)).*?(?=</cfquery>)"/>
-	<cfset var reKillParams      = "(?s)<cfqueryparam[^>]+>"/>
+	<cfset var reFindQueries     = "(?si)(?<=(<cfquery[^p][^>]{0,300}>)).*?(?=</cfquery>)"/>
+	<cfset var reKillParams      = "(?si)<cfqueryparam[^>]+>"/>
 
 	<cffile action="read" file="#Arguments.filename#" variable="FileData"/>
 
