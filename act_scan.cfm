@@ -1,5 +1,7 @@
 <cfset jre = CreateObject("component","jre-utils").init()/>
 
+<cfparam name="Server.Separator.File" default="/"/>
+
 <cfset Request.TotalFound = 0/>
 <cfset Request.TotalQueries = 0/>
 
@@ -62,11 +64,11 @@
 
 		<cfif (type EQ "dir") AND Arguments.recurse>
 
-			<cfset loopDir( Arguments.dirname&'\'&name , true , arguments.token )/>
+			<cfset loopDir( Arguments.dirname & Server.Separator.File & name , true , arguments.token )/>
 
 		<cfelseif Left(Right(name,4),3) EQ '.cf'>
 
-			<cfset Data = huntQP( Arguments.dirname&'\'&name , arguments.token )/>
+			<cfset Data = huntQP( Arguments.dirname & Server.Separator.File & name , arguments.token )/>
 
 			<cfif Data.AlertCount>
 				<div class="fRow" onclick="$j('##f#Hash(Data.Filename)#').toggle(50);">#Data.Filename# - <strong>#Data.AlertCount#</strong> found from #Data.QueryCount# queries.</div>
