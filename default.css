@@ -139,3 +139,9 @@ form .controls a
 	margin:1em; margin-top:0em;
 	display:none;
 }
+
+
+.scopeWarning
+{
+	background: #EEA0A0;
+}
