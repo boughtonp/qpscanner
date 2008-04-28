@@ -10,19 +10,5 @@ $j(document).ready(function()
 		$j('#advanced>legend').replaceWith('<div class="legend">'+$j('#advanced>legend').html()+'</div>');
 	}
 
-	if ($j.browser.msie)
-	{
-		// IE ignores float:left on an element if you absolute position it, so lets just hack it...
 
-		$j(window).resize(function()
-		{
-			$j('form>.controls>a').css
-				({ position : 'absolute'
-				 , display  : 'block'
-				 , float    : 'left'
-				 , clear    : 'none'
-				 , left     : ($j(document).width()/2) - 310  +'px'
-				 });
-		});
-	}
 });
