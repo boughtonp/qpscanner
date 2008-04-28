@@ -1,0 +1,22 @@
+*
+{margin: 0; border-width: 0; padding: 0;}
+
+ul,ol
+{list-style: none;}
+
+hr
+{border-top-width: 1px;}
+
+.break {float: none; clear: both;}
+.left  {float: left; clear: left;}
+.mid   {float: left; clear: none;}
+.right {float: right; clear: right;}
+.w33,.col31,.col3 {width: 33%}
+.w66,.col32       {width: 66%}
+.w25,.col41,.col4 {width: 25%}
+.w50,.col42,.col2 {width: 50%}
+.w75,.col43       {width: 74%}
+.w20,.col51,.col5 {width: 20%}
+.w40,.col52       {width: 39%}
+.w60,.col53       {width: 60%}
+.w80,.col54       {width: 79%}

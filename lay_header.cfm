@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>QueryParam Scanner</title>
+	<link rel="stylesheet" type="text/css" href="core.css"/>
 	<link rel="stylesheet" type="text/css" href="default.css"/>
 	<script type="text/javascript" src="jquery-1.2.3.min.js"></script>
 	<script type="text/javascript">
