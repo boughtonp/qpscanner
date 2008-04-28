@@ -26,6 +26,8 @@
 
 	<cfset var reFindQueries     = "(?si)(?<=(<cfquery[^p][^>]{0,300}>)).*?(?=</cfquery>)"/>
 	<cfset var reKillParams      = "(?si)<cfqueryparam[^>]+>"/>
+	<cfset var reKillSwitch      = "(?si)<cfswitch[^>]+>"/>
+	<cfset var reKillIf          = "(?si)<cfif[^>]+>"/>
 	<cfset var reKillOrderby     = "(?si)\bORDER BY\b.*?$"/>
 	<cfset var reFindScopes      = "(?si)(?<=##([a-z]{1,20}\()?)[^\(##<]+?(?=\.[^##<]+?##)"/>
 	<cfset var reFindName        = '(?si)(?<=(<cfquery[^>]{0,300}\bname=")).*?(?="[^>]{0,300}>)'/>
@@ -35,12 +37,14 @@
 	<cfset Matches = jre.Get(FileData,reFindQueries)/>
 
 	<cfset Result.Filename = Arguments.filename/>
-	<Cfset Result.QueryCount = ArrayLen(Matches)/>
+	<cfset Result.QueryCount = ArrayLen(Matches)/>
 	<cfset Result.Alert = ArrayNew(1)/>
 
 	<cfloop index="i" from="1" to="#ArrayLen(Matches)#">
 
 		<cfset rekCode = jre.Replace(Matches[i],reKillParams,'','ALL')/>
+		<cfset rekCode = jre.Replace(rekCode,reKillSwitch,'','ALL')/>
+		<cfset rekCode = jre.Replace(rekCode,reKillIf,'','ALL')/>
 
 		<cfif NOT Arguments.scanOrderBy>
 			<cfset rekCode = jre.Replace(rekCode,reKillOrderby,'','ALL')/>
@@ -92,20 +96,20 @@
 		<cfif (type EQ "dir") AND Arguments.recurse>
 
 			<cfset loopDir
-				( DirName      = Arguments.dirname & Server.Separator.File & name
-				, recurse      = true
-				, scanOrderBy  = Arguments.scanOrderBy
-				, showScopes   = Arguments.showScopes
-				, markScopes   = Arguments.markScopes
-				, ClientScopes = Arguments.ClientScopes
+				( DirName      : Arguments.dirname & Server.Separator.File & name
+				, recurse      : true
+				, scanOrderBy  : Arguments.scanOrderBy
+				, showScopes   : Arguments.showScopes
+				, markScopes   : Arguments.markScopes
+				, ClientScopes : Arguments.ClientScopes
 				)/>
 
 		<cfelseif Left(Right(name,4),3) EQ '.cf'>
 
 			<cfset Data = huntQP
-				( Filename    = Arguments.dirname & Server.Separator.File & name
-				, scanOrderBy = Arguments.scanOrderBy
-				, showScopes  = Arguments.showScopes
+				( Filename    : Arguments.dirname & Server.Separator.File & name
+				, scanOrderBy : Arguments.scanOrderBy
+				, showScopes  : Arguments.showScopes
 				)/>
 
 			<cfif Data.AlertCount>
@@ -144,14 +148,15 @@
 </cffunction>
 
 
-<cffunction name="ArrayUnique" returntype="Array" output="true">
+<cffunction name="ArrayUnique" returntype="Array" output="false">
 	<cfargument name="ArrayVar" type="Array"/>
 	<cfset var UniqueToken = Chr(65536)/>
-	<cfset ArraySort(Arguments[1],'text')/>
-	<cfset Arguments[1] = ArrayToList( Arguments[1] , UniqueToken )/>
-	<cfset Arguments[1] = REReplace( Arguments[1] & UniqueToken , '(\b(.*?)\b)\1+' , '\1' , 'all' )/>
-	<cfset Arguments[1] = ListToArray( Arguments[1] , UniqueToken )/>
-	<cfreturn Arguments[1]/>
+	<cfset var Result = Duplicate(Arguments.ArrayVar)/>
+	<cfset ArraySort(Result,'text')/>
+	<cfset Result = ArrayToList( Result , UniqueToken )/>
+	<cfset Result = REReplace( Result & UniqueToken , '(\b(.*?)\b)\1+' , '\1' , 'all' )/>
+	<cfset Result = ListToArray( Result , UniqueToken )/>
+	<cfreturn Result/>
 </cffunction>
 
 
@@ -171,7 +176,7 @@
 			, showScopes   : Url.Show_Scopes
 			, markScopes   : Url.Highlight_Scopes
 			, ClientScopes : Url.Client_Scopes
-		)/>
+			)/>
 	</div>
 
 	<cfif Request.TotalQueries GT 0>
