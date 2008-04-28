@@ -49,9 +49,13 @@
 			</div>
 		</fieldset>
 		<fieldset class="controls">
-			<a href="##advanced" onclick="$j('##advanced').toggle();return false;">toggle advanced settings</a>
-			<button type="reset">Reset</button>
-			<button type="submit">Scan</button>
+			<div class="col3 left">
+				<a href="##advanced" onclick="$j('##advanced').toggle();return false;">toggle advanced settings</a>
+			</div>
+			<div class="col3 mid">
+				<button type="reset">Reset</button>
+				<button type="submit">Scan</button>
+			</div>
 		</fieldset>
 	</form>
 
