@@ -1,0 +1,44 @@
+<circuit access="public">
+
+
+	
+	<postfuseaction>
+		<do action="layout.default">
+			<parameter name="Title" value="#Title#"/>
+			<parameter name="Content"/>
+		</do>
+	</postfuseaction>
+	
+	
+
+	<fuseaction name="intro">
+		<set name="Title" value="Start"/>
+		
+		<xfa name="Config" value="config"/>
+		<xfa name="Scan" value="scanner.go"/>
+	
+		<include template="dsp_intro" contentvariable="WelcomeText"/>
+		<include template="frm_intro" contentvariable="QuickstartForm"/>
+		<include template="dsp_about" contentvariable="AboutText"/>
+		
+		<include template="lay_intro" contentvariable="Content"/>
+
+	</fuseaction>
+	
+	
+	
+	<fuseaction name="config">
+		<set name="Title" value="Configuration"/>
+
+		<xfa name="Scan" value="scanner.go"/>
+			
+		<set name="Attributes.Config" value="default" overwrite="false"/>
+
+		<set name="Setting" value="#Settings.read( ConfigId:Attributes.Config , Format:'query' )#"/>
+		
+		<include template="frm_config" contentvariable="Content"/>
+	</fuseaction>
+
+
+
+</circuit>

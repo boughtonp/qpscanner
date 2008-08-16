@@ -1,12 +1,31 @@
-<cfapplication name="qpScanner"/>
-<cfsetting requesttimeout="300" enablecfoutputonly="true" showdebugoutput="false"/>
+<cfsetting showdebugoutput="true" enablecfoutputonly="true"/>
+<cfset Request.Errors = ArrayNew(1)/>
 
-<cfinclude template="lay_header.cfm"/>
+<cffunction name="Struct" returntype="Struct"><cfreturn Arguments/></cffunction>
 
-<cfif StructKeyExists(Url,'StartDir')>
-	<cfinclude template="act_scan.cfm"/>
+<cfset jre = Application.Cfcs.jre/>
+
+<cfset Settings = Application.Cfcs.Settings/>
+
+<cffunction name="link"><cfreturn "./?fuseaction="&LCase(Arguments[1])/></cffunction>
+
+<cfset FUSEBOX_APPLICATION_KEY = 'qpscanner'/>
+
+<cfif CGI.SERVER_NAME EQ 'qpscanner.dev'>
+	<cfset FUSEBOX_MODE =  "development-full-load"/>
 <cfelse>
-	<cfinclude template="frm_setup.cfm"/>
+	<cfset FUSEBOX_MODE = "production"/>
 </cfif>
 
-<cfinclude template="lay_footer.cfm"/>
+<cfset FUSEBOX_PARAMETERS = Struct
+	( defaultFuseaction    : "start.intro"
+	, fuseactionVariable   : "fuseaction"
+	, allowImplicitFusebox : false
+	, mode                 : FUSEBOX_MODE
+	, debug                : false
+	)/>
+
+<cfinclude template="./fusebox5/fusebox5.cfm"/>
+
+
+<cfsetting showdebugoutput="false"/>

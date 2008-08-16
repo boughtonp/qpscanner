@@ -1,0 +1,136 @@
+form.std input,
+form.std select,
+form.std button
+{border-width: 1px;}
+
+
+form.std fieldset
+{
+	border: none 0px;
+	float: none; clear: both;
+}
+
+
+form.std .field
+{
+	width: 96%;
+	margin: 0.75em 1%;
+	float: left; clear: both;
+	border: solid 1px #B1911C;
+	background: #FEFEF2;
+	padding: 1em 1%;
+}
+
+
+form.std .field label.header
+{
+	display: block;
+	float: left; clear: left;
+	font-weight: normal;
+	width: 40%;
+}
+
+form.std.typeA .field label.header
+{
+	text-align: left;
+}
+
+form.std.typeB .field label.header
+{
+	text-align: right;
+}
+
+form.std.typeC .field label.header
+{
+	float: left; clear: both;
+	width: 80%;
+}
+
+
+form.std .field input.edit,
+form.std .field select,
+form.std .field textarea
+{
+	display: block;
+	float: left;
+	clear: none;
+	width: 58%;
+	padding: 0.25em;
+	border: dotted 1px #8090A0;
+	background: #F8F8F8;
+}
+
+form.std.typeC .field input.edit,
+form.std.typeC .field select,
+form.std.typeC .field textarea
+{
+	float: left; clear: both;
+	width: 98%;
+}
+
+form.std .field input.edit:hover,
+form.std .field select:hover,
+form.std .field textarea:hover
+{
+	border: solid 1px #8090A0;
+	background: #FAFAFA;
+}
+
+form.std .field input.edit:focus,
+form.std .field select:focus,
+form.std .field textarea:focus
+{
+	border: solid 1px #8090A0;
+	background: #FFFFFF;
+}
+
+
+
+form.std .field .hint
+{
+	display: block;
+	float: left; clear: none;
+	width: 80%;
+	
+	color: #8090A0;
+	margin-top: 0.75em;
+}
+
+form.std em.accesskey
+{
+	font-style: normal;
+}
+
+
+
+form.std .controls
+{
+	width: 96%;
+	margin: 1em 1%;
+	padding: 0.5em 1%;
+	text-align: center;
+	
+	border-top: solid 1px #EEEEEE;
+}
+
+#intro form.std .controls
+{
+	margin-top: 0.5em;
+	padding: 0 1%;
+	border-top: none;
+}
+
+form.std .controls button
+{
+	margin: 0.25em 0.5em;
+	padding: 0.25em 0.5em;
+	font-size: 1em;
+}
+
+
+
+form.std .field ul.input li
+{
+	display: inline;
+	margin: auto 1em;
+}

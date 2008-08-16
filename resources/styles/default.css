@@ -1,0 +1,178 @@
+* {margin: 0; border-width: 0; padding: 0;}
+
+body
+{
+	font-family: Liberation Sans, Arial, sans-serif;
+	/* background: #EEF8FF; */
+	background: #E6DDB1;
+}
+
+h1
+{
+	padding-top: 0.1em;
+
+	font-weight: normal;
+	font-size: 1.5em;
+	font-variant: small-caps;
+	text-align: center;
+
+	color: black;
+	/* background: #C0CCD8; */
+	background: #F8F8F8;
+	border-bottom: solid 1px #8090A0;
+}
+
+#intro h1
+{
+	background: none;
+	border-bottom: none;
+	margin: 2em auto;
+}
+
+
+body#setup form
+{
+	width: 620px;
+	margin: 1em auto;
+	border: double 3px #8090A0;
+}
+
+
+form button
+{
+	margin: 0 1.5em;
+	padding: 0.2em 0.5em;
+	border-width: 1px;
+	cursor: pointer;
+}
+
+
+body#scan .controls button
+{
+	width: auto;
+	padding: 0.25em 0.5em;
+	font-size: 1em;
+}
+
+
+#status
+{
+}
+
+
+a
+{
+	font-weight: bold;
+	text-decoration: none;
+}
+
+a:hover
+{
+	text-decoration: underline;
+	color: #99CC66;
+}
+
+
+.col2.about
+{
+	font-size: 0.8em;
+	text-align: center;
+}
+
+
+#results
+{
+	margin: 1em;
+	
+}
+
+#results .file
+{
+	display: block;
+	margin-top: 0.25em;
+	border: solid 1px;
+	padding: 0.25em;
+	max-width: 100%;
+	overflow: hidden;
+	
+
+	background: url(../images/bkg_golden.png);
+	border-color: #B1911C;
+}
+
+#results .file .summary
+{
+	white-space: nowrap; 
+}
+
+#results .file_info
+{
+	border: solid 1px;
+	border-top: 0px;
+	 
+	background: #FEFEF2; #EFE4A5;
+	border-color: #B1911C;
+}
+
+#results .query
+{
+	display: block;
+	// border-top: solid 1px;
+	padding: 0.1em 0.2em;
+
+	// border-color: #B1911C;
+}
+
+#results .ContainsClientScope .scope_info
+{
+	background: #FF9933;
+	color: #800000;
+	padding: 0 0.2em;
+	font-weight: bold;
+}
+
+#results .file.ContainsClientScope label
+{
+	color: red;
+	font-weight: bold;
+}
+
+
+
+#results .query label
+{
+	font-weight: bold;
+}
+
+#results .query_code
+{
+	padding: 0.2em;
+	
+	font-family: Liberation Mono, Courier New, monospace;
+	font-size: 0.8em;
+	
+	background-color: #F8F8F8;
+}
+
+#results label
+{
+	cursor: pointer;
+}
+
+
+h2
+{
+	margin: 0 0.5em;
+	margin-top: 0.75em;
+}
+
+p
+{
+	padding: 0.4em 1em;
+}
+
+
+.scopeWarning
+{
+	background: #EEA0A0;
+}

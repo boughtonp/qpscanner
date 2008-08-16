@@ -1,0 +1,13 @@
+<fusebox>
+
+	<circuits>
+		<circuit alias="start"   path="./circuits/start"/>
+		<circuit alias="scanner" path="./circuits/scanner"/>
+
+		<circuit alias="layout"  path="./layout"/>
+	</circuits>
+
+
+
+
+</fusebox>

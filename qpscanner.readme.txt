@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
-qpScanner v0.5.2
+qpScanner v0.7-dev
 
 
 
@@ -17,7 +17,11 @@ datasources need to be setup.
 USAGE
 =====
 
-After launching QueryParam Scanner, you should see a simple form to fill in.
+After launching QueryParam Scanner, you should see a Quick Start form:
+
+	Select Config
+		This allows you to choose between "default" or "paranoid" configs.
+		The default config should be fine for most people.
 
 	Starting Directory
 		Where you put the location of the project(s) you wish to scan.
@@ -45,12 +49,26 @@ adverse affect on performance.
 
 
 
+KNOWN ISSUES
+============
+
+This is a development release of QueryParam Scanner, and this list of issues
+may not be a complete one. Always ensure you have a recent backup of your code.
+
+There is one known issue with this version of qpScanner:
+
+1. Incorrect Line Numbers With Identical Queries
+If you have a file with multiple identical queries (same name/attributes/SQL),
+QueryParam Scanner will report line numbers correctly for only the first of 
+the queries.
+
+
 
 SUPPORT
 =======
 
-For support on this project, please use the RIA Forge contact page:
-http://qpscanner.riaforge.org/index.cfm?event=page.projectcontact
+For help or support, please see the project page at Hybridchill:
+http://www.hybridchill.com/projects/qpscanner.html
 
 
 
@@ -60,21 +78,27 @@ CREDITS
 
 qpScanner project created and maintained by Peter Boughton
 
-qpScanner makes use of two other open-source projects:
-- Java Regex Utilities (jre-utils)  http://jreutils.riaforge.org
-- jQuery JavaScript library         http://www.jquery.com
+qpScanner makes use of three other open-source projects:
+- Java Regex Utilities       http://www.hybridchill.com/projects/jre-utils.html
+- jQuery JavaScript library  http://www.jquery.com
+- Fusebox Framework          http://www.fuseboxframework.org
 
 
 
 
-LICENSING
-=========
+LICENSING & VERSIONS
+====================
 
-qpScanner and jre-utils are released under the modified BSD license.
-(see included bsd-license.txt for details)
 
-jQuery is used under the MIT license.
-(see included mit-license.txt for details)
+Modified BSD license (see included bsd-license.txt for details)
+- qpScanner v0.7.0
+- jre-utils v0.6.0
+
+MIT license (see included mit-license.txt for details)
+- jQuery v1.2.6
+
+Apache 2 license (see fusebox5/LICENSE.txt for details)
+- Fusebox v5.5.1
 
 
 

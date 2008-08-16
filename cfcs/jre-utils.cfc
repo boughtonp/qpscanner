@@ -1,4 +1,4 @@
-<cfcomponent output="false" displayname="jre-utils v0.5">
+<cfcomponent output="false" displayname="jre-utils v0.6">
 
 
 	<cffunction name="init" output="false" access="public">
@@ -44,7 +44,7 @@
 
 		<cfloop index="CurrentFlag" list="#Arguments.FlagList#">
 
-			<cfif IsNumeric(CurrentFlag)>
+			<cfif isNumeric(CurrentFlag)>
 				<cfset ResultFlag = BitOr( ResultFlag , CurrentFlag )/>
 
 			<cfelseif StructKeyExists( This.Flags , CurrentFlag )>
@@ -62,6 +62,23 @@
 
 
 
+	<cffunction name="matches" returntype="Boolean" output="false" access="public">
+		<cfargument name="Text"    type="String"/>
+		<cfargument name="Regex"   type="String"/>
+		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
+
+		<cfset var Pattern = createObject("java","java.util.regex.Pattern")
+			.compile( Arguments.Regex , parseFlags(Arguments.Flags) )/>
+		<cfset var Matcher = Pattern.Matcher(Arguments.Text)/>
+
+		<cfloop condition="Matcher.find()">
+			<cfreturn True/>
+		</cfloop>
+
+		<cfreturn False/>
+	</cffunction>
+
+
 
 	<cffunction name="get" returntype="Array" output="false" access="public">
 		<cfargument name="Text"    type="String"/>
@@ -69,11 +86,11 @@
 		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
 
 		<cfset var Pattern = CreateObject("java","java.util.regex.Pattern")
-			.Compile( Arguments.Regex , parseFlags(Arguments.Flags) )/>
+			.compile( Arguments.Regex , parseFlags(Arguments.Flags) )/>
 		<cfset var Matcher = Pattern.Matcher(Arguments.Text)/>
 		<cfset var Matches = ArrayNew(1)/>
 
-		<cfloop condition="Matcher.Find()">
+		<cfloop condition="Matcher.find()">
 			<cfset ArrayAppend(Matches,Matcher.Group())/>
 		</cfloop>
 
@@ -88,9 +105,9 @@
 		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
 
 		<cfreturn This.get
-			( Text    : Arguments.Text
-			, Pattern : Arguments.Regex
-			, Flags   : BitOr( Arguments.Flags , This.Flags.CASE_INSENSITIVE )
+			( Text  : Arguments.Text
+			, Regex : Arguments.Regex
+			, Flags : BitOr( Arguments.Flags , This.Flags.CASE_INSENSITIVE )
 			)/>
 	</cffunction>
 
@@ -110,28 +127,28 @@
 		<cfset var Groups     = ""/>
 		<cfset var GroupIndex = ""/>
 
-		<cfif IsSimpleValue(Arguments.Replacement)>
+		<cfif isSimpleValue(Arguments.Replacement)>
 
-			<cfif This.BackslashReferences AND REFind('[\\$]',Arguments.Replacement)>
-				<cfset Arguments.Replacement = Replace(Arguments.Replacement,'$',Chr(65536),'all')/>
-				<cfset Arguments.Replacement = REReplace(Arguments.Replacement,'\\(?=[0-9])','$','all')/>
-				<cfset Arguments.Replacement = Replace(Arguments.Replacement,Chr(65536),'\$','all')/>
+			<cfif This.BackslashReferences AND REfind('[\\$]',Arguments.Replacement)>
+				<cfset Arguments.Replacement = replace(Arguments.Replacement,'$',Chr(65536),'all')/>
+				<cfset Arguments.Replacement = REreplace(Arguments.Replacement,'\\(?=[0-9])','$','all')/>
+				<cfset Arguments.Replacement = replace(Arguments.Replacement,Chr(65536),'\$','all')/>
 			</cfif>
 
-			<cfset String = CreateObject("java","java.lang.String").init(Arguments.Text)/>
+			<cfset String = createObject("java","java.lang.String").init(Arguments.Text)/>
 			<cfif Arguments.Scope EQ "ALL">
-				<cfreturn String.ReplaceAll(Arguments.Regex,Arguments.Replacement)/>
+				<cfreturn String.replaceAll(Arguments.Regex,Arguments.Replacement)/>
 			<cfelse>
-				<cfreturn String.ReplaceFirst(Arguments.Regex,Arguments.Replacement)/>
+				<cfreturn String.replaceFirst(Arguments.Regex,Arguments.Replacement)/>
 			</cfif>
 
 		<cfelse>
 
-			<cfset Pattern = CreateObject("java","java.util.regex.Pattern").Compile(Arguments.Regex)/>
+			<cfset Pattern = createObject("java","java.util.regex.Pattern").compile(Arguments.Regex)/>
 			<cfset Matcher = Pattern.Matcher( Arguments.Text )/>
-			<cfset Results = CreateObject("java","java.lang.StringBuffer").init()/>
+			<cfset Results = createObject("java","java.lang.StringBuffer").init()/>
 
-			<cfloop condition="Matcher.Find()">
+			<cfloop condition="Matcher.find()">
 
 				<cfset Groups = ArrayNew(1)/>
 
@@ -139,7 +156,7 @@
 					<cfset ArrayAppend( Groups , Matcher.Group( JavaCast("int",GroupIndex) ) )/>
 				</cfloop>
 
-				<cfset Matcher.AppendReplacement
+				<cfset Matcher.appendReplacement
 					( Results , Arguments.Replacement( Matcher.Group() , Groups ) )/>
 
 				<cfif Arguments.Scope NEQ "ALL">
@@ -148,11 +165,27 @@
 
 			</cfloop>
 
-			<cfset Matcher.AppendTail(Results)/>
+			<cfset Matcher.appendTail(Results)/>
 
-			<cfreturn Results.ToString()/>
+			<cfreturn Results.toString()/>
 		</cfif>
 	</cffunction>
+
+
+
+	<cffunction name="escape" returntype="String" output="false" access="public">
+		<cfargument name="Text" type="String"/>
+		<cfset var Result = Arguments.Text/>
+		<cfset var Symbol = ""/>
+		<cfset var EscapeChars = "\,.,[,],(,),^,$,|,?,*,+,{,}"/>
+
+		<cfloop index="Symbol" list="EscapeChars">
+			<cfset Result = replace( Result , Symbol , '\'&Symbol , 'all')/>
+		</cfloop>
+
+		<cfreturn Result />
+	</cffunction>
+
 
 
 
