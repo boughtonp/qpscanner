@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<title>Simple Calendar</title>
+	<style type="text/css">
+		#calendar
+		{
+		 width: 15em; margin: 0.5em; padding: 0.5em;
+		 margin-top: 0px; padding-top: 0px;
+		 text-align: center;
+		 font: 12pt Tahoma;
+		}
+
+		#year
+		{width: 2.25em; border-width: 1px;}
+
+		#yearControls
+		{margin: 0px auto;}
+
+		#yearControls a
+		{
+		 text-decoration: none;
+		 color: black;
+		 font-weight: bold;
+		 font-size: 1.25em;
+		 line-height: 0.75em;
+		 margin: 0em 0.25em;
+		}
+
+		a.day, div.day, div.dayName
+		{
+		 display: block;
+		 float: left;
+		 width: 2em;
+		 text-align: center;
+		 text-decoration: none;
+		 color: black;
+		 z-index: 10;
+		 margin: 1px;
+		 height: 1em; line-height: 1em;
+		}
+
+		div.dayName
+		{
+		 font-size: 0.9em;
+		 width: 2.2em;
+		 font-weight: bold;
+		 font-variant: small-caps;
+		}
+
+		a.day:hover
+		{font-weight: bold; background: #FF9933;}
+
+		.Jan,.Mar,.May,.Jul,.Sep,.Nov
+		{background: #DEDEDE;}
+		.Feb,.Apr,.Jun,.Aug,.Oct,.Dec
+		{background: #EFEFEF;}
+
+		.monthLabel
+		{
+		 font: 12pt Tahoma;
+		 position: absolute;
+		 margin: 0em; margin-top: 1em;
+		 left: 0em;
+		 z-index: 50;
+		 padding: 0.5em;
+		 font-weight: bold;
+		 text-transform: uppercase;
+		 text-align: center;
+		}
+	</style>
+	<script type="text/javascript">
+	<!--
+		function elem(ent){return document.getElementById(ent);}
+
+		function ret(val)
+		{
+			if (location.href.split(/[?#&]/).length > 2)
+			{
+				var id = location.href.split(/[?#&]/)[2];
+				window.opener.document.getElementById(id).value = val;
+				window.close();
+			}
+			else
+			{
+				alert(val);
+			}
+		}
+
+		Date.prototype.getDayofYear = function()
+		{
+	        with (this){var Y = getFullYear(), M = getMonth(), D = getDate();}
+			return (Date.UTC(Y, M, D) - Date.UTC(Y, 0, 0)) / 86400000;
+		}
+    	Date.prototype.setDayofYear = new Function("X", "this.setMonth(0, X) ; return this");
+
+		Date.prototype.getDaysinYear = function()
+		{
+	        with (this){var Y = getFullYear(), M = getMonth(), D = getDate();}
+		    return Math.round((new Date(Y + 1, M - 1, D) - new Date(Y, M - 1, D)) / 86400000);
+		}
+
+		function renderCalendar(selectedDate)
+		{
+			var output = '';
+
+			if (selectedDate == -1)
+			{
+				selectedDate = new Date();
+			}
+			else
+			{
+				// TODO: Convert correctly.
+				var sD = selectedDate.split('-')[0];
+				var sM = selectedDate.split('-')[1]-1;
+				var sY = selectedDate.split('-')[2];
+				selectedDate = new Date(sY,sM,sD);
+			}
+
+			output += '<div id="yearControls"><label for="year">Year:</label><input id="year" value="'+selectedDate.getFullYear()+'"';
+			output += 'title="'+selectedDate.getDate()+'-'+selectedDate.getMonth()+'" onchange="renderCalendar(this.title+\'-\'+this.value)"';
+			output += ' size="1" maxlength="4"/>';
+			output += '<a href="javascript:elem(\'year\').value++" onclick="elem(\'year\').value++;elem(\'year\').onchange();return false;">+</a>';
+			output += '<a href="javascript:elem(\'year\').value-'+'-" onclick="elem(\'year\').value-'+'-;elem(\'year\').onchange();return false;">-</a>';
+			output += '</div>';
+
+			output += '<div class="dayName">Sun</div>';
+			output += '<div class="dayName">Mon</div>';
+			output += '<div class="dayName">Tue</div>';
+			output += '<div class="dayName">Wed</div>';
+			output += '<div class="dayName">Thu</div>';
+			output += '<div class="dayName">Fri</div>';
+			output += '<div class="dayName">Sat</div>';
+			output += '<br style="float: none; clear: both;"/>';
+
+			var offset = (new Date(selectedDate.getFullYear(),0,1)).getDay()+1;
+
+			for (var off = 1; off < offset; off++)
+			{
+				output += '<div class="day">~</div>';
+			}
+
+			var todaysDate = new Date(selectedDate.getFullYear(),0,1);
+			var monthString = ('Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec').split(',');
+			var daysInMonth = ('31,28,31,30,31,30,31,31,30,31,30,31').split(',');
+
+			for (var doy = 1; doy <= selectedDate.getDaysinYear(); doy++)
+			{
+				todaysDate.setDayofYear(doy);
+				var thisMonth = monthString[todaysDate.getMonth()];
+
+				if (todaysDate.getDate() == 1)
+				{
+					var pos = 2 + 4.35 * todaysDate.getMonth();   // ) * (daysInMonth[todaysDate.getMonth()]/7);
+
+					output += '<div class="monthLabel" style="top:'+pos*1.12+'em;">';
+					var letters = thisMonth.split('');
+					for (var l = 0; l < letters.length; l++)
+					{
+					output += letters[l]+'<br/>'
+					}
+					output += '</div>';
+				}
+
+				output += '<a class="day '+thisMonth+'"';
+				if (todaysDate.getDate() == 1)
+				{
+					output += ' name="'+thisMonth+'"';
+				}
+				output += ' href="javascript:alert(this.title);" onclick="ret(this.title); return false;"';
+				output += ' title="'+todaysDate.getDate()+'-'+monthString[todaysDate.getMonth()]+'-'+todaysDate.getFullYear()+'"';
+				output += '>'+todaysDate.getDate()+'</a>';
+			}
+
+			for (off = selectedDate.getDaysinYear()+1; off <= 372-offset; off++)
+			{
+				output += '<div class="day">~</div>';
+			}
+
+			elem('calendar').innerHTML = output;
+		}
+	// -->
+	</script>
+</head>
+<body onload="if (location.href.split(/[?#&]/).length > 1){renderCalendar(location.href.split(/[?#&]/)[1])}else{renderCalendar(-1)}">
+	<!--[if lt IE 7]>
+	<div class="monthLabel" style="top:  2.2em;">J<br/>a<br/>n<br/></div>
+	<div class="monthLabel" style="top:  7.2em;">F<br/>e<br/>b<br/></div>
+	<div class="monthLabel" style="top: 12.0em;">M<br/>a<br/>r<br/></div>
+	<div class="monthLabel" style="top: 16.9em;">A<br/>p<br/>r<br/></div>
+	<div class="monthLabel" style="top: 21.8em;">M<br/>a<br/>y<br/></div>
+	<div class="monthLabel" style="top: 26.7em;">J<br/>u<br/>n<br/></div>
+	<div class="monthLabel" style="top: 31.5em;">J<br/>l<br/>y<br/></div>
+	<div class="monthLabel" style="top: 36.3em;">A<br/>u<br/>g<br/></div>
+	<div class="monthLabel" style="top: 41.2em;">S<br/>e<br/>p<br/></div>
+	<div class="monthLabel" style="top: 46.1em;">O<br/>c<br/>t<br/></div>
+	<div class="monthLabel" style="top: 51.0em;">N<br/>o<br/>v<br/></div>
+	<div class="monthLabel" style="top: 56.0em;">D<br/>e<br/>c<br/></div>
+	<![endif]-->
+	<div id="calendar"></div>
+</body>
+</html>
