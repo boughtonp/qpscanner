@@ -15,10 +15,17 @@
 	<script type="text/javascript">
 		var $j = jQuery.noConflict();
 	</script>
+
+	<cfif find('MSIE',CGI.HTTP_USER_AGENT) AND jre.get(CGI.HTTP_USER_AGENT,'(?<=MSIE )\d+')[1] LTE 6 >
+		<!--[if lt IE 7]>
+			<style type="text/css">*{behavior:url(./resources/scripts/iepngfix.htc);}</style>
+		<![endif]-->
+	</cfif>
+
 </head>
 <body id="#myFusebox.OriginalFuseaction#">
 <cfif myFusebox.OriginalFuseaction NEQ 'intro'>
-	<h1><a href="#link('start.intro')#"><img src="./resources/images/long_logo.png" alt="QueryParam Scanner"/></a></h1>
+	<h1><a href="#link('start.intro')#"><img src="./resources/images/long_logo.png" alt="QueryParam Scanner" style="width: 448px; height: 40px;"/></a></h1>
 </cfif>
 
 #Content#
