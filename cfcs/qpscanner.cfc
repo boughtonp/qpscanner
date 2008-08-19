@@ -17,6 +17,7 @@
 		<cfargument name="ClientScopes"          type="String"  default="form,url,client,cookie" hint="Scopes considered client scopes."/>
 		<cfargument name="NumericFunctions"      type="String"  default="val,year,month,day,hour,minute,second,asc,dayofweek,dayofyear,daysinyear,quarter,week,fix,int,round,ceiling,gettickcount,len,min,max,pi,arraylen,listlen,structcount,listvaluecount,listvaluecountnocase,rand,randrange"/>
 		<cfargument name="BuiltInFunctions"      type="String"  default="now,#Arguments.NumericFunctions#"/>
+		<cfargument name="ScopeExclusions"       type="String"  default=""      hint="Exclude any scopes matching this."/>
 
 		<cfset var Arg = -1/>
 		<cfset var RegexList = ""/>
@@ -180,6 +181,7 @@
 		<cfset var LineCount       = -1/>
 		<cfset var BeforeQueryCode = -1/>
 		<cfset var isRisk          = -1/>
+		<cfset var ScopeList       = -1/>
 		<cfset var UniqueToken = Chr(65536)/>
 		<cfset var qryResult   = QueryNew(Variables.ResultFields)/>
 		<cfset var REX = Variables.Regexes/>
@@ -214,43 +216,62 @@
 
 
 			<cfif isRisk>
-				<cfset CurRow = QueryAddRow(qryResult)/>
 
-				<cfset qryResult.QueryCode[CurRow] = jre.replace( QueryCode , Chr(13) , Chr(10) , 'all' ) />
-				<cfset qryResult.QueryCode[CurRow] = jre.replace( qryResult.QueryCode[CurRow] , Chr(10)&Chr(10) , Chr(10) , 'all' ) />
+				<cfset exclude = false/>
+
 				<cfif This.showScopeInfo >
-					<cfset qryResult.ScopeList[CurRow] = ArrayToList( ArrayUnique( jre.get( Matches[i] , REX.findScopes ) ) ) />
+					<cfset ScopeList = ArrayToList( ArrayUnique( jre.get( Matches[i] , REX.findScopes ) ) ) />
 
-					<cfset qryResult.ContainsClientScope[CurRow] = false/>
-					<cfif This.highlightClientScopes>
-						<cfloop index="CurrentScope" list="#This.ClientScopes#">
-							<cfif ListFind( qryResult.ScopeList[CurRow] , CurrentScope )>
-								<cfset qryResult.ContainsClientScope[CurRow] = true/>
+					<cfif Len(This.ScopeExclusions)>
+						<cfloop index="CurrentScope" list="#This.ScopeExclusions#">
+							<cfif ListFind( ScopeList , CurrentScope )>
+								<cfset exclude = true/>
 								<cfbreak/>
 							</cfif>
 						</cfloop>
 					</cfif>
 				</cfif>
 
-				<!--- CF8 doesn't support get()[1] so need to use two lines: --->
-				<cfset QueryTagCode = jre.get( Matches[i] , REX.findQueryTag )/>
-				<cfset QueryTagCode = QueryTagCode[1] />
+				<cfif NOT exclude>
 
-				<cfset BeforeQueryCode = ListFirst ( replace ( ' '&FileData&' ' , Matches[i] , UniqueToken ) , UniqueToken )/>
+					<cfset CurRow = QueryAddRow(qryResult)/>
+
+					<cfset qryResult.QueryCode[CurRow] = jre.replace( QueryCode , Chr(13) , Chr(10) , 'all' ) />
+					<cfset qryResult.QueryCode[CurRow] = jre.replace( qryResult.QueryCode[CurRow] , Chr(10)&Chr(10) , Chr(10) , 'all' ) />
+					<cfif This.showScopeInfo >
+						<cfset qryResult.ScopeList[CurRow] = ScopeList />
+
+						<cfset qryResult.ContainsClientScope[CurRow] = false/>
+						<cfif This.highlightClientScopes>
+							<cfloop index="CurrentScope" list="#This.ClientScopes#">
+								<cfif ListFind( qryResult.ScopeList[CurRow] , CurrentScope )>
+									<cfset qryResult.ContainsClientScope[CurRow] = true/>
+									<cfbreak/>
+								</cfif>
+							</cfloop>
+						</cfif>
+					</cfif>
+
+					<!--- CF8 doesn't support get()[1] so need to use two lines: --->
+					<cfset QueryTagCode = jre.get( Matches[i] , REX.findQueryTag )/>
+					<cfset QueryTagCode = QueryTagCode[1] />
+
+					<cfset BeforeQueryCode = ListFirst ( replace ( ' '&FileData&' ' , Matches[i] , UniqueToken ) , UniqueToken )/>
 
 
-				<cfset StartLine = 1+ArrayLen( jre.get( BeforeQueryCode , chr(10) ) )/>
-				<cfset LineCount = ArrayLen( jre.get( Matches[i] , chr(10) ) )/>
+					<cfset StartLine = 1+ArrayLen( jre.get( BeforeQueryCode , chr(10) ) )/>
+					<cfset LineCount = ArrayLen( jre.get( Matches[i] , chr(10) ) )/>
 
 
-				<cfset qryResult.QueryStartLine[CurRow] = StartLine/>
-				<cfset qryResult.QueryEndLine[CurRow]   = StartLine + LineCount />
-				<cfset qryResult.QueryName[CurRow]      = ArrayToList( jre.get( ListLast(QueryTagCode,chr(10)) , REX.findName ) )/>
-				<cfset qryResult.QueryId[CurRow]        = createUuid() />
-				<cfif NOT Len( qryResult.QueryName[CurRow] )>
-					<cfset qryResult.QueryName[CurRow] = "[unknown]"/>
+					<cfset qryResult.QueryStartLine[CurRow] = StartLine/>
+					<cfset qryResult.QueryEndLine[CurRow]   = StartLine + LineCount />
+					<cfset qryResult.QueryName[CurRow]      = ArrayToList( jre.get( ListLast(QueryTagCode,chr(10)) , REX.findName ) )/>
+					<cfset qryResult.QueryId[CurRow]        = createUuid() />
+					<cfif NOT Len( qryResult.QueryName[CurRow] )>
+						<cfset qryResult.QueryName[CurRow] = "[unknown]"/>
+					</cfif>
+
 				</cfif>
-
 			</cfif>
 
 		</cfloop>
