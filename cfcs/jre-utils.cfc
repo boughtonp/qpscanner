@@ -179,7 +179,7 @@
 		<cfset var Symbol = ""/>
 		<cfset var EscapeChars = "\,.,[,],(,),^,$,|,?,*,+,{,}"/>
 
-		<cfloop index="Symbol" list="EscapeChars">
+		<cfloop index="Symbol" list="#EscapeChars#">
 			<cfset Result = replace( Result , Symbol , '\'&Symbol , 'all')/>
 		</cfloop>
 
