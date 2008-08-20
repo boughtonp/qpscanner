@@ -32,7 +32,7 @@
 			<dd class="file_info" id="#FileId#_queries">
 				<dl>
 				<cfoutput>
-					<dt class="query<cfif ContainsClientScope> ContainsClientScope</cfif>">
+					<dt class="query<cfif Len(ScopeList) AND ContainsClientScope> ContainsClientScope</cfif>">
 						<label class="name" for="#QueryId#">#QueryName#</label>
 						<cfif isNumeric(QueryStartLine)><small class="lines">(lines #QueryStartLine#..#QueryEndLine#)</small></cfif>
 						<cfif Len(ScopeList)>
