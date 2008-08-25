@@ -13,6 +13,19 @@ datasources need to be setup.
 
 
 
+ECLIPSE PLUGIN INSTALLATION
+===========================
+
+There is an Eclipse plugin available for QueryParam Scanner.
+
+To install the plugin, please add the update site to Eclipse:
+
+	http://eclipse.hybridchill.com/
+
+Please consult the documentation that comes with the Plugin for further 
+details on the Plugin and how to use it.
+
+
 
 USAGE
 =====
@@ -76,9 +89,9 @@ http://www.hybridchill.com/projects/qpscanner.html
 CREDITS
 =======
 
-qpScanner project created and maintained by Peter Boughton
+QueryParam Scanner is a project created and maintained by Peter Boughton.
 
-qpScanner makes use of three other open-source projects:
+It makes use of three other open-source projects:
 - Java Regex Utilities       http://www.hybridchill.com/projects/jre-utils.html
 - jQuery JavaScript library  http://www.jquery.com
 - Fusebox Framework          http://www.fuseboxframework.org
@@ -89,12 +102,9 @@ qpScanner makes use of three other open-source projects:
 LICENSING & VERSIONS
 ====================
 
-
-Modified BSD license (see included bsd-license.txt for details)
+GPL license (see included gpl-license.txt for details)
 - qpScanner v0.7.0
 - jre-utils v0.6.0
-
-MIT license (see included mit-license.txt for details)
 - jQuery v1.2.6
 
 Apache 2 license (see fusebox5/LICENSE.txt for details)
