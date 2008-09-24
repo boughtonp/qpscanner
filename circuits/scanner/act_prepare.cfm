@@ -16,11 +16,11 @@
 
 <cfset ScanData.StartingDir = expandPath( ScanData.StartingDir & '/' )/>
 
-<!--- Fix for CF8 bug: --->
+<!--- Fix for CF bug: --->
 <cfif isDefined('Server.ColdFusion.ProductName')
 	AND Server.ColdFusion.ProductName EQ 'ColdFusion Server'
 	AND ListLen(ScanData.StartingDir,':') GT 2>
-	<cfset ScanData.StartingDir = rereplace( ScanData.StartingDir , "^.*([A-Z]:[^:]+)$" , "\1" )/>
+	<cfset ScanData.StartingDir = rereplace( ScanData.StartingDir , "^.*([A-Za-z]:[^:]+)$" , "\1" )/>
 </cfif>
 <!--- / --->
 
