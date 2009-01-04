@@ -7,7 +7,7 @@
 
 <cfset Settings = Application.Cfcs.Settings/>
 
-<cffunction name="link"><cfreturn "./?fuseaction="&LCase(Arguments[1])/></cffunction>
+<cffunction name="link"><cfreturn "./index.cfm?fuseaction="&LCase(Arguments[1])/></cffunction>
 
 <cfset FUSEBOX_APPLICATION_KEY = 'qpscanner'/>
 
