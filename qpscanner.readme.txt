@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
-qpScanner v0.7.2
+qpScanner v0.7.3
 
 
 
@@ -103,7 +103,7 @@ LICENSING & VERSIONS
 ====================
 
 GPL license (see included gpl-license.txt for details)
-- qpScanner v0.7.0
+- qpScanner v0.7.3
 - jre-utils v0.6.0
 - jQuery v1.2.6
 
