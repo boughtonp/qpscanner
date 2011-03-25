@@ -119,7 +119,7 @@ limitations under the License.
 					<cfset loadFusebox() />
 				<cfelse>
 					<!--- _fba should *not* be exposed --->
-					<cfset _fba = application[variables.FUSEBOX_APPLICATION_KEY] />
+					<cfset variables._fba = application[variables.FUSEBOX_APPLICATION_KEY] />
 					<!--- fix attributes precedence --->
 					<cfif _fba.precedenceFormOrURL is "URL">
 						<cfset structAppend(variables.attributes,URL,true) />
@@ -133,7 +133,7 @@ limitations under the License.
 				</cfif>
 			</cflock>
 		<cfelse>
-			<cfset _fba = application[variables.FUSEBOX_APPLICATION_KEY] />
+			<cfset variables._fba = application[variables.FUSEBOX_APPLICATION_KEY] />
 			<!--- fix attributes precedence --->
 			<cfif _fba.precedenceFormOrURL is "URL">
 				<cfset structAppend(variables.attributes,URL,true) />
@@ -199,11 +199,11 @@ limitations under the License.
 			<!--- _parsedFileData should *not* be exposed --->
 			<cfif _fba.mode is "development-circuit-load">
 				<cflock name="#application.ApplicationName#_fusebox_#variables.FUSEBOX_APPLICATION_KEY#" type="exclusive" timeout="300">
-					<cfset _parsedFileData = _fba.compileRequest(attributes.fuseaction,myFusebox) />
+					<cfset variables._parsedFileData = _fba.compileRequest(attributes.fuseaction,myFusebox) />
 				</cflock>
 			<cfelse>
 				<cflock name="#application.ApplicationName#_fusebox_#variables.FUSEBOX_APPLICATION_KEY#" type="readonly" timeout="300">
-					<cfset _parsedFileData = _fba.compileRequest(attributes.fuseaction,myFusebox) />
+					<cfset variables._parsedFileData = _fba.compileRequest(attributes.fuseaction,myFusebox) />
 				</cflock>
 			</cfif>
 		</cfif>
@@ -337,12 +337,12 @@ limitations under the License.
 		<cfif not structKeyExists(application,variables.FUSEBOX_APPLICATION_KEY) or variables.myFusebox.parameters.userProvidedLoadParameter>
 			<!--- can't be conditional: we don't know the state of the debug flag yet --->
 			<cfset variables.myFusebox.trace("Fusebox","Creating Fusebox application object") />
-			<cfset _fba = createObject("component","fuseboxApplication") />
+			<cfset variables._fba = createObject("component","fuseboxApplication") />
 			<cfset application[variables.FUSEBOX_APPLICATION_KEY] = _fba.init(variables.FUSEBOX_APPLICATION_KEY,variables.FUSEBOX_APPLICATION_PATH,variables.myFusebox,variables.FUSEBOX_CALLER_PATH,variables.FUSEBOX_PARAMETERS) />
 		<cfelse>
 			<!--- can't be conditional: we don't know the state of the debug flag yet --->
 			<cfset variables.myFusebox.trace("Fusebox","Reloading Fusebox application object") />
-			<cfset _fba = application[variables.FUSEBOX_APPLICATION_KEY] />
+			<cfset variables._fba = application[variables.FUSEBOX_APPLICATION_KEY] />
 			<!--- it exists and the load is implicit, not explicit (via user) so just reload XML --->
 			<cfset _fba.reload(variables.FUSEBOX_APPLICATION_KEY,variables.FUSEBOX_APPLICATION_PATH,variables.myFusebox,variables.FUSEBOX_PARAMETERS) />
 		</cfif>
