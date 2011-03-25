@@ -9,20 +9,27 @@
 	<cfset ScanData.RequestTimeout = -1/>
 </cfif>
 
-
 <cfif ScanData.StartingDir EQ 'auto'>
 	<cfset ScanData.StartingDir = Settings.findHomeDirectory()/>
 </cfif>
 
-<cfset ScanData.StartingDir = expandPath( ScanData.StartingDir & '/' )/>
 
-<!--- Fix for CF bug: --->
-<cfif isDefined('Server.ColdFusion.ProductName')
-	AND Server.ColdFusion.ProductName EQ 'ColdFusion Server'
-	AND ListLen(ScanData.StartingDir,':') GT 2>
-	<cfset ScanData.StartingDir = rereplace( ScanData.StartingDir , "^.*([A-Za-z]:[^:]+)$" , "\1" )/>
+<cffunction name="isAbsoluteDirectory" returntype="Boolean" output="false">
+	<cfargument name="DirName" type="String" />
+	
+	<cfif findnocase('windows',Server.OS.Name)>
+		<cfreturn refindnocase('\A[a-z]:',Arguments.DirName) />
+	<cfelse>
+		<cfreturn (left(Arguments.DirName,1) EQ '/') />
+	</cfif>
+</cffunction>
+
+<cfif NOT (Server.ColdFusion.ProductName EQ 'ColdFusion Server'
+	AND isAbsoluteDirectory(ScanData.StartingDir)
+	)>
+	<cfset ScanData.StartingDir = expandPath( ScanData.StartingDir & '/' )/>
 </cfif>
-<!--- / --->
+
 
 <cfset ScanData.StartingDir = jre.replace( ScanData.StartingDir , '\\' , '/' ,  'all' )/>
 <cfset ScanData.StartingDir = jre.replace( ScanData.StartingDir , '/+$' , '' , 'all' )/>

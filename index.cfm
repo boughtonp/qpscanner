@@ -1,7 +1,7 @@
 <cfsetting showdebugoutput="true" enablecfoutputonly="true"/>
 <cfset Request.Errors = ArrayNew(1)/>
 
-<cffunction name="Struct" returntype="Struct"><cfreturn Arguments/></cffunction>
+<cffunction name="Variables.Struct" returntype="Struct"><cfreturn Arguments/></cffunction>
 
 <cfset jre = Application.Cfcs.jre/>
 
@@ -11,11 +11,7 @@
 
 <cfset FUSEBOX_APPLICATION_KEY = 'qpscanner'/>
 
-<cfif CGI.SERVER_NAME EQ 'qpscanner.dev'>
-	<cfset FUSEBOX_MODE =  "development-full-load"/>
-<cfelse>
-	<cfset FUSEBOX_MODE = "production"/>
-</cfif>
+<cfset FUSEBOX_MODE = "production"/>
 
 <cfset FUSEBOX_PARAMETERS = Struct
 	( defaultFuseaction    : "start.intro"
