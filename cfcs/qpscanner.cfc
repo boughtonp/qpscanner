@@ -45,7 +45,7 @@
 
 		<cfsavecontent variable="RegexList"><cfoutput>
 			findQueries      |(?si)(<#cf#query[^p]).*?(?=</#cf#query>)
-			findQueryTag     |(?si)(<#cf#query[^p][^>]{0,300}>)
+			findQueryTag     |(?si)(<#cf#query(?!p)[^>]{0,300}>)
 			isQueryOfQuery   |(?si)dbtype\s*=\s*["']query["']
 			killParams       |(?si)<#cf#queryparam[^>]+>
 			killCfTag        |(?si)<#cf#[a-z]{2,}[^>]*> <!--- Deliberately excludes Custom Tags and CFX --->
