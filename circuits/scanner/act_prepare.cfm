@@ -16,7 +16,7 @@
 
 <cffunction name="isAbsoluteDirectory" returntype="Boolean" output="false">
 	<cfargument name="DirName" type="String" />
-	
+
 	<cfif findnocase('windows',Server.OS.Name)>
 		<cfreturn refindnocase('\A[a-z]:',Arguments.DirName) />
 	<cfelse>
@@ -24,7 +24,7 @@
 	</cfif>
 </cffunction>
 
-<cfif NOT (Server.ColdFusion.ProductName EQ 'ColdFusion Server'
+<cfif NOT (ListFind('ColdFusion Server,BlueDragon',Server.ColdFusion.ProductName)
 	AND isAbsoluteDirectory(ScanData.StartingDir)
 	)>
 	<cfset ScanData.StartingDir = expandPath( ScanData.StartingDir & '/' )/>

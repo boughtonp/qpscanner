@@ -2,6 +2,9 @@
 <cfset Request.Errors = ArrayNew(1)/>
 
 <cffunction name="Variables.Struct" returntype="Struct"><cfreturn Arguments/></cffunction>
+<cfif StructKeyExists(Variables,'Variables.Struct')>
+	<cfset Variables.Struct = Variables['Variables.Struct']/>
+</cfif>
 
 <cfset jre = Application.Cfcs.jre/>
 
