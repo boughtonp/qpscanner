@@ -219,7 +219,7 @@
 				<cfset qryResult.QueryCode[CurRow] = jre.replace( QueryCode , Chr(13) , Chr(10) , 'all' ) />
 				<cfset qryResult.QueryCode[CurRow] = jre.replace( qryResult.QueryCode[CurRow] , Chr(10)&Chr(10) , Chr(10) , 'all' ) />
 				<cfif This.showScopeInfo >
-					<cfset qryResult.ScopeList[CurRow] = ArrayToList( ArrayUnique( jre.get( qryResult.QueryCode[CurRow] , REX.findScopes ) ) ) />
+					<cfset qryResult.ScopeList[CurRow] = ArrayToList( ArrayUnique( jre.get( rekCode , REX.findScopes ) ) ) />
 
 					<cfset qryResult.ContainsClientScope[CurRow] = false/>
 					<cfif This.highlightClientScopes>
