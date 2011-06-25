@@ -55,11 +55,11 @@
 			method="go"
 		/>
 
-		<set name="Session.Instance[Attributes.Instance]" value="Struct
-			( Settings = ScanData
+		<set name="Session.Instance[Attributes.Instance]" value="
+			{ Settings = ScanData
 			, Results  = ScanResults
 			, TimeRun  = Now()
-			)"/>
+			}"/>
 
 	</fuseaction>
 

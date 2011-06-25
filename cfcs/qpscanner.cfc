@@ -1,4 +1,4 @@
-<cfcomponent output="false" displayname="qpscanner v0.7.3">
+<cfcomponent output="false" displayname="qpscanner v0.7.4">
 
 	<cffunction name="Struct" returntype="Struct" access="private"><cfreturn Arguments/></cffunction>
 
@@ -30,13 +30,13 @@
 		<cfset Variables.jre = Arguments.jre/>
 		<cfset StructDelete(This,'jre')/>
 
-		<cfset This.Totals = Struct
-			( AlertCount: 0
-			, QueryCount: 0
-			, FileCount : 0
-			, DirCount  : 0
-			, Time      : 0
-			)/>
+		<cfset This.Totals = 
+			{ AlertCount= 0
+			, QueryCount= 0
+			, FileCount = 0
+			, DirCount  = 0
+			, Time      = 0
+			}/>
 
 		<cfset This.Timeout = false/>
 
@@ -90,13 +90,13 @@
 		</cftry>
 
 		<cfset This.Totals.Time = getTickCount() - StartTime/>
-		<cfreturn Struct
-			( Data : Variables.AlertData
-			, Info : Struct
-				( Totals  : This.Totals
-				, Timeout : This.Timeout
-				)
-			)/>
+		<cfreturn 
+			{ Data = Variables.AlertData
+			, Info = 
+				{ Totals  = This.Totals
+				, Timeout = This.Timeout
+				}
+			}/>
 	</cffunction>
 
 

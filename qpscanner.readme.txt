@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
-qpScanner v0.7.3
+qpScanner v0.7.4
 
 
 
@@ -10,6 +10,12 @@ Extract all files to a directory in your webroot, then access in a browser.
 
 Everything required is contained within the zip file, and no mappings nor
 datasources need to be setup. 
+
+All versions of qpScanner can run against code written for any CFML engine.
+
+However, qpScanner itself, from v0.7.4 onwatds requires a CFML engine that supports nested struct notation.
+
+This means Adobe CF8 and earlier are not supported, and must use qpScanner v0.7.3
 
 
 
@@ -103,7 +109,7 @@ LICENSING & VERSIONS
 ====================
 
 GPL license (see included gpl-license.txt for details)
-- qpScanner v0.7.3
+- qpScanner v0.7.4
 - jre-utils v0.6.0
 - jQuery v1.2.6
 

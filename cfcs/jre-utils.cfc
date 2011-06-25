@@ -8,15 +8,15 @@
 
 		<cfset var CurrentFlag = ""/>
 
-		<cfset This.Flags = Struct
-			( UNIX_LINES       : 1
-			, CASE_INSENSITIVE : 2
-			, COMMENTS         : 4
-			, MULTILINE        : 8
-			, DOTALL           : 32
-			, UNICODE_CASE     : 64
-			, CANON_EQ         : 128
-			)/>
+		<cfset This.Flags = 
+			{ UNIX_LINES       = 1
+			, CASE_INSENSITIVE = 2
+			, COMMENTS         = 4
+			, MULTILINE        = 8
+			, DOTALL           = 32
+			, UNICODE_CASE     = 64
+			, CANON_EQ         = 128
+			}/>
 
 		<cfset This.DefaultFlags = This.parseFlags( Arguments.DefaultFlags , Arguments.IgnoreInvalidFlags )/>
 
