@@ -23,8 +23,7 @@
 	<cffunction name="onRequestStart" returntype="Boolean" output="false">
 		<cfset var Result = True/>
 
-		<!--- TODO: FIX: Implement as URL check once CFCs are stable. --->
-		<cfif True>
+		<cfif StructKeyExists(Url,'AppReload')>
 			<cfset Result = Result AND onApplicationStart()/>
 		</cfif>
 

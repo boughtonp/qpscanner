@@ -1,12 +1,13 @@
-<cfcomponent output="false" displayname="jre-utils v0.6">
+<cfcomponent output="false" displayname="jrex v0.8ish">
 
 
 	<cffunction name="init" output="false" access="public">
 		<cfargument name="DefaultFlags"        type="String"  default="MULTILINE"/>
-		<cfargument name="IgnoreInvalidFlags"  type="Boolean" default="false"/>
-		<cfargument name="BackslashReferences" type="Boolean" default="false"/>
+		<cfargument name="IgnoreInvalidFlags"  type="Boolean" default="false" />
+		<cfargument name="BackslashReferences" type="Boolean" default="false" />
+		<cfargument name="SetNullGroupsBlank"  type="Boolean" default="true"  />
 
-		<cfset var CurrentFlag = ""/>
+		<cfset var CurProp = 0 />
 
 		<cfset This.Flags = 
 			{ UNIX_LINES       = 1
@@ -18,9 +19,16 @@
 			, CANON_EQ         = 128
 			}/>
 
+
 		<cfset This.DefaultFlags = This.parseFlags( Arguments.DefaultFlags , Arguments.IgnoreInvalidFlags )/>
 
-		<cfset This.BackslashReferences = Arguments.BackslashReferences/>
+		<cfloop index="CurProp" list="BackslashReferences,SetNullGroupsBlank">
+			<cfset This[CurProp] = Arguments[CurProp] />
+		</cfloop>
+
+
+		<cfset Variables.PatternCache = {} />
+
 
 		<!--- In CFMX we cannot define a "Replace" function directly. --->
 		<cfset This.replace   = _replace/>
@@ -31,8 +39,25 @@
 
 
 
-	<cffunction name="Struct" returntype="Struct" access="private"><cfreturn Arguments/></cffunction>
+	<cffunction name="onMissingMethod" returntype="any" output="false" access="public">
+		<cfargument name="MissingMethodName"      type="String" />
+		<cfargument name="MissingMethodArguments" type="Struct" />
 
+		<cfif right(Arguments.MissingMethodName,6) EQ 'NOCASE'>
+			<cfset var TargetFunction = left(Arguments.MissingMethodName,len(Arguments.MissingMethodName)-6) />
+			<cfset var Args = Arguments.MissingMethodArguments />
+
+			<cfif StructKeyExists(Args,'Flags')>
+				<cfset Args.Flags = BitOr( Args.Flags , This.Flags.CASE_INSENSITIVE ) />
+			<cfelse>
+				<cfset Args.Flags = BitOr( This.DefaultFlags , This.Flags.CASE_INSENSITIVE ) />
+			</cfif>
+
+			<cfset var Function = This[TargetFunction] />
+			<cfreturn Function(ArgumentCollection=Args) />
+		</cfif>
+
+	</cffunction>
 
 
 
@@ -61,22 +86,45 @@
 	</cffunction>
 
 
+	<cffunction name="compilePattern" output="false" access="public">
+		<cfargument name="Regex" type="String" />
+		<cfargument name="Flags" type="String" />
 
-	<cffunction name="matches" returntype="Boolean" output="false" access="public">
-		<cfargument name="Text"    type="String"/>
-		<cfargument name="Regex"   type="String"/>
-		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
+		<cfset var Key = Hash(Arguments.Regex&Arguments.Flags) />
 
-		<cfset var Pattern = createObject("java","java.util.regex.Pattern")
-			.compile( Arguments.Regex , parseFlags(Arguments.Flags) )/>
-		<cfset var Matcher = Pattern.Matcher(Arguments.Text)/>
+		<cfif NOT StructKeyExists(Variables.PatternCache,Key)>
+			<cfset Variables.PatternCache[Key] = createObject("java","java.util.regex.Pattern")
+				.compile( Arguments.Regex , parseFlags(Arguments.Flags) ) />
+		</cfif>
 
-		<cfloop condition="Matcher.find()">
-			<cfreturn True/>
-		</cfloop>
-
-		<cfreturn False/>
+		<cfreturn Variables.PatternCache[Key]/>
 	</cffunction>
+
+
+
+	<cffunction name="flushPatternCache" returntype="void" outout="false" access="public"
+		hint="Clears cache for specified pattern, or all patterns if none specified.">
+		<cfargument name="Regex" type="String" required="false" />
+		<cfargument name="Flags" type="String" required="false" />
+
+		<cfif StructKeyExists(Arguments,'Regex')>
+			<cfparam name="Arguments.Flags" default="#This.DefaultFlags#"/>
+
+			<cfset StructDelete( Variables.PatternCache , Hash(serialize(Arguments)) ) />
+
+		<cfelseif StructKeyExists(Arguments,'Flags')>
+			<cfthrow
+				message = "Argument 'flags' can only be used in conjunction with argument 'regex'."
+				type    = "JreUtils.FlushPatternCache.InvalidArgument.Flags"
+			/>
+
+		<cfelse>
+			<cfset Variables.PatternCache = {} />
+
+		</cfif>
+
+	</cffunction>
+
 
 
 
@@ -85,8 +133,7 @@
 		<cfargument name="Regex"   type="String"/>
 		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
 
-		<cfset var Pattern = CreateObject("java","java.util.regex.Pattern")
-			.compile( Arguments.Regex , parseFlags(Arguments.Flags) )/>
+		<cfset var Pattern = compilePattern( Arguments.Regex , Arguments.Flags )/>
 		<cfset var Matcher = Pattern.Matcher(Arguments.Text)/>
 		<cfset var Matches = ArrayNew(1)/>
 
@@ -99,18 +146,135 @@
 
 
 
-	<cffunction name="getNoCase" returntype="Array" output="false" access="public">
+	<cffunction name="getFirst" returntype="String" output="false" access="public">
 		<cfargument name="Text"    type="String"/>
 		<cfargument name="Regex"   type="String"/>
 		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
 
-		<cfreturn This.get
-			( Text  : Arguments.Text
-			, Regex : Arguments.Regex
-			, Flags : BitOr( Arguments.Flags , This.Flags.CASE_INSENSITIVE )
-			)/>
+		<cfset var Pattern = compilePattern( Arguments.Regex , Arguments.Flags )/>
+		<cfset var Matcher = Pattern.Matcher(Arguments.Text)/>
+
+		<cfif Matcher.find()>
+			<cfreturn Matcher.Group() />
+		<cfelse>
+			<cfreturn '' />
+		</cfif>
 	</cffunction>
 
+
+
+	<cffunction name="getCount" returntype="Numeric" output="false" access="public">
+		<cfargument name="Text"    type="String"/>
+		<cfargument name="Regex"   type="String"/>
+		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
+
+		<cfset var Pattern = compilePattern( Arguments.Regex , Arguments.Flags )/>
+		<cfset var Matcher = Pattern.Matcher(Arguments.Text)/>
+		<cfset var Count = 0 />
+
+		<cfloop condition="Matcher.find()">
+			<cfset Count++ />
+		</cfloop>
+
+		<cfreturn Count />
+	</cffunction>
+
+
+
+	<cffunction name="getGroups" returntype="Array" output="false" access="public">
+		<cfargument name="Text"    type="String"/>
+		<cfargument name="Regex"   type="String"/>
+		<cfargument name="SetNullGroupsBlank" type="Boolean" default="#This.SetNullGroupsBlank#"/>
+		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
+
+		<cfset var Pattern = compilePattern( Arguments.Regex , Arguments.Flags )/>
+		<cfset var Matcher = Pattern.Matcher(Arguments.Text)/>
+		<cfset var Matches = ArrayNew(1)/>
+
+
+		<cfloop condition="Matcher.find()">
+			<cfset CurMatch = 
+				{ match = Matcher.Group()
+				, groups = ArrayNew(1)
+				}/>
+			<cfloop index="i" from="1" to="#Matcher.groupCount()#">
+				<cfif (Matcher.start(i) EQ -1) AND Arguments.SetNullGroupsBlank >
+					<cfset ArrayAppend(CurMatch.Groups,'')/>
+				<cfelse>
+					<cfset ArrayAppend(CurMatch.Groups,Matcher.group(i))/>
+				</cfif>
+			</cfloop>
+
+			<cfset ArrayAppend(Matches,CurMatch)/>
+		</cfloop>
+
+		<cfreturn Matches/>
+	</cffunction>
+
+
+
+
+	<!--- \ match* - clones of get* with first two arguments swapped. --->
+
+	<cffunction name="match" returntype="Array" output="false" access="public"
+		hint="This function swaps argument order for consistency with rematch">
+		<cfargument name="Regex"   type="String"/>
+		<cfargument name="Text"    type="String"/>
+		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
+
+		<cfreturn This.get( ArgumentCollection = Arguments )/>
+	</cffunction>
+
+
+
+	<cffunction name="matchFirst" returntype="String" output="false" access="public">
+		<cfargument name="Regex"   type="String"/>
+		<cfargument name="Text"    type="String"/>
+		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
+
+		<cfreturn This.getFirst( ArgumentCollection = Arguments )/>
+	</cffunction>
+
+
+
+	<cffunction name="matchCount" returntype="String" output="false" access="public">
+		<cfargument name="Regex"   type="String"/>
+		<cfargument name="Text"    type="String"/>
+		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
+
+		<cfreturn This.getCount( ArgumentCollection = Arguments )/>
+	</cffunction>
+
+
+
+	<cffunction name="matchGroups" returntype="Array" output="false" access="public">
+		<cfargument name="Regex"   type="String"/>
+		<cfargument name="Text"    type="String"/>
+		<cfargument name="SetNullGroupsBlank" type="Boolean" default="#This.SetNullGroupsBlank#"/>
+		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
+
+		<cfreturn This.getGroups( ArgumentCollection = Arguments ) />
+	</cffunction>
+
+
+	<!--- / match* --->
+
+
+
+	<cffunction name="matches" returntype="Boolean" output="false" access="public">
+		<cfargument name="Text"    type="String"/>
+		<cfargument name="Regex"   type="String"/>
+		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
+
+		<cfset var Pattern = compilePattern( Arguments.Regex , Arguments.Flags )/>
+		<cfset var Matcher = Pattern.Matcher(Arguments.Text)/>
+
+		<cfloop condition="Matcher.find()">
+			<cfreturn true/>
+		</cfloop>
+
+		<cfreturn false/>
+	</cffunction>
 
 
 
@@ -119,6 +283,7 @@
 		<cfargument name="Regex"       type="String"/>
 		<cfargument name="Replacement" type="Any"    hint="String or UDF"/>
 		<cfargument name="Scope"       type="String" default="ONE" hint="ONE,ALL"/>
+		<cfargument name="Flags"       type="String" default="#This.DefaultFlags#"/>
 
 		<cfset var String     = ""/>
 		<cfset var Pattern    = ""/>
@@ -144,7 +309,7 @@
 
 		<cfelse>
 
-			<cfset Pattern = createObject("java","java.util.regex.Pattern").compile(Arguments.Regex)/>
+			<cfset Pattern = compilePattern( Arguments.Regex , Arguments.Flags )/>
 			<cfset Matcher = Pattern.Matcher( Arguments.Text )/>
 			<cfset Results = createObject("java","java.lang.StringBuffer").init()/>
 
@@ -173,19 +338,15 @@
 
 
 
-	<cffunction name="escape" returntype="String" output="false" access="public">
-		<cfargument name="Text" type="String"/>
-		<cfset var Result = Arguments.Text/>
-		<cfset var Symbol = ""/>
-		<cfset var EscapeChars = "\,.,[,],(,),^,$,|,?,*,+,{,}"/>
+	<cffunction name="split" returntype="Array" output="false" access="public">
+		<cfargument name="Text"    type="String"/>
+		<cfargument name="Regex"   type="String"/>
+		<cfargument name="Flags"   default="#This.DefaultFlags#"/>
 
-		<cfloop index="Symbol" list="#EscapeChars#">
-			<cfset Result = replace( Result , Symbol , '\'&Symbol , 'all')/>
-		</cfloop>
-
-		<cfreturn Result />
+		<cfreturn compilePattern( Arguments.Regex , Arguments.Flags )
+			.split(Arguments.Text)
+			/>
 	</cffunction>
-
 
 
 

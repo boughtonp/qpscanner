@@ -44,17 +44,15 @@
 		<cfset Variables.AlertData = QueryNew(Variables.ResultFields)/>
 
 		<cfsavecontent variable="RegexList"><cfoutput>
-			findQueries      |(?si)(<#cf#query[^p]).*?(?=</#cf#query>)
-			findQueryTag     |(?si)(<#cf#query(?!p)[^>]{0,300}>)
+			findQueries      |(?si)(<#cf#query\b)(?:[^<]++|<(?!/#cf#query>))+(?=</#cf#query>)
+			findQueryTag     |(?si)(<#cf#query[^p][^>]++>)
 			isQueryOfQuery   |(?si)dbtype\s*=\s*["']query["']
-			killParams       |(?si)<#cf#queryparam[^>]+>
-			killCfTag        |(?si)<#cf#[a-z]{2,}[^>]*> <!--- Deliberately excludes Custom Tags and CFX --->
+			killParams       |(?si)<#cf#queryparam[^>]++>
+			killCfTag        |(?si)<#cf#[a-z]{2,}[^>]*+> <!--- Deliberately excludes Custom Tags and CFX --->
 			killOrderBy      |(?si)\bORDER BY\b.*?$
 			killBuiltIn      |(?si)##(#ListChangeDelims(This.BuiltInFunctions,'|')#)\([^)]*\)##
 			findScopes       |(?si)(?<=##([a-z]{1,20}\()?)[^\(##<]+?(?=\.[^##<]+?##)
-			findName         |(?si)(?<=(<#cf#query[^>]{0,300}\bname=")).*?(?="[^>]{0,300}>)
 			findClientScopes |(?i)\b(#ListChangeDelims(This.ClientScopes,'|')#)\b
-			isCfmlFile       |(?i)\.cf(c|ml?)$
 		</cfoutput></cfsavecontent>
 
 		<cfloop index="Rex" list="#RegexList#" delimiters="#Chr(10)#">
@@ -108,6 +106,7 @@
 		<cfset var CurrentTarget = -1/>
 		<cfset var process = true/>
 		<cfset var jre = Variables.jre/>
+		<cfset var Ext = 0 />
 
 		<cfif DirectoryExists(Arguments.DirName)>
 
@@ -136,13 +135,19 @@
 
 						<cfset scan( CurrentTarget )/>
 
-					<cfelseif jre.matches( CurrentTarget , Variables.Regexes.isCfmlFile )>
-						<cfset This.Totals.FileCount = This.Totals.FileCount + 1 />
+					<cfelse>
+						<cfset Ext = LCase(ListLast(CurrentTarget,'.')) >
 
-						<cfset qryCurData = hunt( CurrentTarget )/>
+						<cfif Ext EQ 'cfc' OR Ext EQ 'cfm' OR Ext EQ 'cfml'>
+	
+							<cfset This.Totals.FileCount = This.Totals.FileCount + 1 />
+	
+							<cfset qryCurData = hunt( CurrentTarget )/>
+	
+							<cfif qryCurData.RecordCount>
+								<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
+							</cfif>
 
-						<cfif qryCurData.RecordCount>
-							<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
 						</cfif>
 
 					</cfif>
@@ -219,25 +224,29 @@
 				<cfset qryResult.QueryCode[CurRow] = jre.replace( QueryCode , Chr(13) , Chr(10) , 'all' ) />
 				<cfset qryResult.QueryCode[CurRow] = jre.replace( qryResult.QueryCode[CurRow] , Chr(10)&Chr(10) , Chr(10) , 'all' ) />
 				<cfif This.showScopeInfo >
-					<cfset qryResult.ScopeList[CurRow] = ArrayToList( ArrayUnique( jre.get( rekCode , REX.findScopes ) ) ) />
+					<cfset qryResult.ScopeList[CurRow] = [] />
+					<cfloop index="CurScope" array="#jre.get( rekCode , REX.findScopes )#">
+						<cfif NOT ArrayFind(qryResult.ScopeList[CurRow],CurScope)>
+							<cfset ArrayAppend(qryResult.ScopeList[CurRow],CurScope)>
+						</cfif>
+					</cfloop>
 
 					<cfset qryResult.ContainsClientScope[CurRow] = false/>
 					<cfif This.highlightClientScopes>
 						<cfloop index="CurrentScope" list="#This.ClientScopes#">
-							<cfif ListFind( qryResult.ScopeList[CurRow] , CurrentScope )>
+							<cfif ArrayFind( qryResult.ScopeList[CurRow] , CurrentScope )>
 								<cfset qryResult.ContainsClientScope[CurRow] = true/>
 								<cfbreak/>
 							</cfif>
 						</cfloop>
 					</cfif>
+					
+					<cfset qryResult.ScopeList[CurRow] = ArrayToList(qryResult.ScopeList[CurRow]) />
 				</cfif>
 
-				<!--- CF8 doesn't support get()[1] so need to use two lines: --->
-				<cfset QueryTagCode = jre.get( Matches[i] , REX.findQueryTag )/>
-				<cfset QueryTagCode = QueryTagCode[1] />
+				<cfset QueryTagCode = jre.getFirst( Matches[i] , REX.findQueryTag )/>
 
 				<cfset BeforeQueryCode = ListFirst ( replace ( ' '&FileData&' ' , Matches[i] , UniqueToken ) , UniqueToken )/>
-
 
 				<cfset StartLine = 1+ArrayLen( jre.get( BeforeQueryCode , chr(10) ) )/>
 				<cfset LineCount = ArrayLen( jre.get( Matches[i] , chr(10) ) )/>
@@ -245,7 +254,7 @@
 
 				<cfset qryResult.QueryStartLine[CurRow] = StartLine/>
 				<cfset qryResult.QueryEndLine[CurRow]   = StartLine + LineCount />
-				<cfset qryResult.QueryName[CurRow]      = ArrayToList( jre.get( ListLast(QueryTagCode,chr(10)) , REX.findName ) )/>
+				<cfset qryResult.QueryName[CurRow]      = jre.getFirst(QueryTagCode,'(?<=\bname\s{0,10}=\s{0,10}(["'']))\S(?=\1)') />
 				<cfset qryResult.QueryId[CurRow]        = createUuid() />
 				<cfif NOT Len( qryResult.QueryName[CurRow] )>
 					<cfset qryResult.QueryName[CurRow] = "[unknown]"/>
@@ -268,32 +277,11 @@
 	</cffunction>
 
 
-
-
-
-
-
-
-	<cffunction name="ArrayUnique" returntype="Array" output="false" access="private">
-		<cfargument name="ArrayVar" type="Array"/>
-		<cfset var UniqueToken = Chr(65536)/>
-		<cfset var Result = duplicate(Arguments.ArrayVar)/>
-		<cfset ArraySort(Result,'text')/>
-		<cfset Result = ArrayToList( Result , UniqueToken )/>
-		<!--- TODO: MINOR: FIX: Using \b works for the ScopeList, but is not good enough for general use - why not using UniqueToken? --->
-		<cfset Result = REreplace( Result & UniqueToken , '(\b(.*?)\b)\1+' , '\1' , 'all' )/>
-		<cfset Result = ListToArray( Result , UniqueToken )/>
-		<!--- TODO: MINOR: Ideally, the original array order should be restored. --->
-		<cfreturn Result/>
-	</cffunction>
-
-
-
 	<cffunction name="QueryAppend" returntype="Query" output="false" access="private">
 		<cfargument name="QueryOne" type="Query"/>
 		<cfargument name="QueryTwo" type="Query"/>
 		<cfset var Result = -1/>
-		<!--- Bug fix for CF8 --->
+		<!--- Bug fix for CF9 --->
 		<cfif NOT Arguments.QueryOne.RecordCount><cfreturn Arguments.QueryTwo /></cfif>
 		<cfif NOT Arguments.QueryTwo.RecordCount><cfreturn Arguments.QueryOne /></cfif>
 		<!--- / --->
