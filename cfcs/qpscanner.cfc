@@ -68,6 +68,8 @@
 
 	<cffunction name="go" returntype="any" output="false" access="public">
 		<cfset var StartTime = getTickCount()/>
+		
+		<cfset var result = "">
 
 		<cfif This.RequestTimeout GT 0>
 			<cfsetting requesttimeout="#This.RequestTimeout#"/>
@@ -88,13 +90,13 @@
 		</cftry>
 
 		<cfset This.Totals.Time = getTickCount() - StartTime/>
-		<cfreturn 
-			{ Data = Variables.AlertData
-			, Info = 
+		<cfset return = { Data = Variables.AlertData
+				, Info = 
 				{ Totals  = This.Totals
 				, Timeout = This.Timeout
 				}
 			}/>
+		<cfreturn result/>
 	</cffunction>
 
 
