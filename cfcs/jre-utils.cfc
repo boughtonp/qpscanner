@@ -42,19 +42,21 @@
 	<cffunction name="onMissingMethod" returntype="any" output="false" access="public">
 		<cfargument name="MissingMethodName"      type="String" />
 		<cfargument name="MissingMethodArguments" type="Struct" />
+		
+		<cfset var local = StructNew()>
 
 		<cfif right(Arguments.MissingMethodName,6) EQ 'NOCASE'>
-			<cfset var TargetFunction = left(Arguments.MissingMethodName,len(Arguments.MissingMethodName)-6) />
-			<cfset var Args = Arguments.MissingMethodArguments />
+			<cfset local.TargetFunction = left(Arguments.MissingMethodName,len(Arguments.MissingMethodName)-6) />
+			<cfset local.Args = Arguments.MissingMethodArguments />
 
-			<cfif StructKeyExists(Args,'Flags')>
-				<cfset Args.Flags = BitOr( Args.Flags , This.Flags.CASE_INSENSITIVE ) />
+			<cfif StructKeyExists(local.Args,'Flags')>
+				<cfset local.Args.Flags = BitOr( local.Args.Flags , This.Flags.CASE_INSENSITIVE ) />
 			<cfelse>
-				<cfset Args.Flags = BitOr( This.DefaultFlags , This.Flags.CASE_INSENSITIVE ) />
+				<cfset local.Args.Flags = BitOr( This.DefaultFlags , This.Flags.CASE_INSENSITIVE ) />
 			</cfif>
 
-			<cfset var Function = This[TargetFunction] />
-			<cfreturn Function(ArgumentCollection=Args) />
+			<cfset local.Function = This[local.TargetFunction] />
+			<cfreturn Function(ArgumentCollection=local.Args) />
 		</cfif>
 
 	</cffunction>
