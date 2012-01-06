@@ -42,7 +42,7 @@
 			, killBuiltIn      = new cfregex( '(?si)##(#ListChangeDelims(This.BuiltInFunctions,'|')#)\([^)]*\)##' )
 			, findScopes       = new cfregex( '(?si)(?<=##([a-z]{1,20}\()?)[^\(##<]+?(?=\.[^##<]+?##)' )
 			, findClientScopes = new cfregex( '(?i)\b(#ListChangeDelims(This.ClientScopes,'|')#)\b' )
-			, findQueryName    = new cfregex( '(?<=\bname\s{0,10}=\s{0,10}(["'']))\S(?=\1)' )
+			, findQueryName    = new cfregex( '(?<=\bname\s{0,99}=\s{0,99})(?:"[^"]++"|''[^'']++''|[^"''\s]++)' )
 			, Newline          = new cfregex( chr(10) )
 			}/>
 
