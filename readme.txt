@@ -2,20 +2,24 @@
 qpScanner v0.7.4
 
 
-
-INSTALLATION
+REQUIREMENTS
 ============
-	
-Extract all files to a directory in your webroot, then access in a browser.
-
-Everything required is contained within the zip file, and no mappings nor
-datasources need to be setup. 
 
 All versions of qpScanner can run against code written for any CFML engine.
 
-However, qpScanner itself, from v0.7.4 onwatds requires a CFML engine that supports nested struct notation.
+However, from v0.7.4 onwards, qpScanner only runs on CFML engines that support nested struct notation - meaning CF 9, OBD 1.4, Railo 3.x, or newer.
 
-This means Adobe CF8 and earlier are not supported, and must use qpScanner v0.7.3
+To run qpScanner on CF8 you must use qpScanner v0.7.3, available from: https://github.com/boughtonp/qpscanner/tags
+
+
+
+INSTALLATION
+============
+
+Extract all files to a directory in your webroot, then access in a browser.
+
+Everything required is contained within the zip file, and no mappings nor
+datasources need to be setup.
 
 
 
@@ -28,7 +32,7 @@ To install the plugin, please add the update site to Eclipse:
 
 	http://eclipse.hybridchill.com/
 
-Please consult the documentation that comes with the Plugin for further 
+Please consult the documentation that comes with the Plugin for further
 details on the Plugin and how to use it.
 
 
@@ -45,15 +49,15 @@ After launching QueryParam Scanner, you should see a Quick Start form:
 	Starting Directory
 		Where you put the location of the project(s) you wish to scan.
 		This can be either an absolute path or a mapping.
-	
+
 	Recursive
-		Indicates if you want qpScanner to look inside directories, or remain 
-		at the current directory level. 
+		Indicates if you want qpScanner to look inside directories, or remain
+		at the current directory level.
 
 
 Once these are set as appropriate, press Scan and qpScanner will get to work.
 
-As it finds queries with CF variables (ie: #values_in_hashes#) that are not 
+As it finds queries with CF variables (ie: #values_in_hashes#) that are not
 inside a <cfqueryparam/> tag, it will list that file. The positions of the
 queries are displayed when clicking on a file, and clicking on each of those
 reveals the actual contents of the query.
@@ -62,8 +66,8 @@ When complete, it will list how many were found out of how many total queries.
 
 
 
-NOTE: QueryParam Scanner should be used *only* in your development environment, 
-not on a live/public box. In addition to the security risks, it might have an 
+NOTE: QueryParam Scanner should be used *only* in your development environment,
+not on a live/public box. In addition to the security risks, it might have an
 adverse affect on performance.
 
 
@@ -78,7 +82,7 @@ There is one known issue with this version of qpScanner:
 
 1. Incorrect Line Numbers With Identical Queries
 If you have a file with multiple identical queries (same name/attributes/SQL),
-QueryParam Scanner will report line numbers correctly for only the first of 
+QueryParam Scanner will report line numbers correctly for only the first of
 the queries.
 
 
