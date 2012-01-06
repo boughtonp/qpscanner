@@ -1,6 +1,6 @@
 <cfcomponent output="false">
 
-	<cfset This.Name = "qpscanner@#CGI.SERVER_NAME#"/>
+	<cfset This.Name = "qpscanner_v0.7.5@#CGI.SERVER_NAME#"/>
 	<cfset This.SessionManagement = true/>
 
 
