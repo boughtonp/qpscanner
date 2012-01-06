@@ -102,7 +102,7 @@ QueryParam Scanner is a project created and maintained by Peter Boughton.
 
 It makes use of three other open-source projects:
 
-* Java Regex Utilities      - http://www.hybridchill.com/projects/jre-utils.html
+* cfRegex                   - http://www.cfregex.net
 * jQuery JavaScript library - http://www.jquery.com
 * Fusebox Framework         - http://www.fuseboxframework.org
 
@@ -115,7 +115,7 @@ LICENSING & VERSIONS
 GPL license (see included gpl-license.txt for details)
 
 * qpScanner v0.7.5
-* jre-utils v0.6.0
+* cfRegex v0.1.002-qp
 * jQuery v1.2.6
 
 Apache 2 license (see fusebox5/LICENSE.txt for details)

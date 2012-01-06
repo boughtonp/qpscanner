@@ -9,11 +9,11 @@
 
 		<cfset Application.Version = "0.7.5"/>
 
-		<cfset Application.Cfcs.jre      = createObject("component","cfcs.jre-utils").init()/>
-		<cfset Application.Cfcs.Settings = createObject("component","cfcs.settings").init
-			( ConfigDirectory : expandPath('./config')
-			)/>
-		<cfset Application.Cfcs.Scanner  = createObject("component","cfcs.qpscanner")/>
+		<cfset Application.Cfcs =
+			{ Settings = new cfcs.settings( ConfigDirectory : expandPath('./config') )
+			, Scanner  = createObject("component","cfcs.qpscanner")
+			}
+			/>
 
 		<cfreturn Result/>
 	</cffunction>
