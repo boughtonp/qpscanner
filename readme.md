@@ -1,4 +1,3 @@
--------------------------------------------------------------------------------
 qpScanner v0.7.4
 
 
@@ -32,8 +31,8 @@ To install the plugin, please add the update site to Eclipse:
 
 	http://eclipse.hybridchill.com/
 
-Please consult the documentation that comes with the Plugin for further
-details on the Plugin and how to use it.
+Please consult the documentation that comes with the plugin for further
+details on the plugin and how to use it.
 
 
 
@@ -57,7 +56,7 @@ After launching QueryParam Scanner, you should see a Quick Start form:
 
 Once these are set as appropriate, press Scan and qpScanner will get to work.
 
-As it finds queries with CF variables (ie: #values_in_hashes#) that are not
+As it finds queries with CF variables (ie: `#values_in_hashes#`) that are not
 inside a <cfqueryparam/> tag, it will list that file. The positions of the
 queries are displayed when clicking on a file, and clicking on each of those
 reveals the actual contents of the query.
@@ -102,9 +101,10 @@ CREDITS
 QueryParam Scanner is a project created and maintained by Peter Boughton.
 
 It makes use of three other open-source projects:
-- Java Regex Utilities       http://www.hybridchill.com/projects/jre-utils.html
-- jQuery JavaScript library  http://www.jquery.com
-- Fusebox Framework          http://www.fuseboxframework.org
+
+* Java Regex Utilities      - http://www.hybridchill.com/projects/jre-utils.html
+* jQuery JavaScript library - http://www.jquery.com
+* Fusebox Framework         - http://www.fuseboxframework.org
 
 
 
@@ -113,13 +113,11 @@ LICENSING & VERSIONS
 ====================
 
 GPL license (see included gpl-license.txt for details)
-- qpScanner v0.7.4
-- jre-utils v0.6.0
-- jQuery v1.2.6
+
+* qpScanner v0.7.4
+* jre-utils v0.6.0
+* jQuery v1.2.6
 
 Apache 2 license (see fusebox5/LICENSE.txt for details)
-- Fusebox v5.5.1
 
-
-
--------------------------------------------------------------------------------
+* Fusebox v5.5.1
