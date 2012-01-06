@@ -1,4 +1,4 @@
-<cfoutput><?xml version="1.0" encoding="UTF-8"?>
+<cfcontent type="text/xml"/><cfoutput><?xml version="1.0" encoding="UTF-8"?>
 <qpscanner>
 
 	<info>

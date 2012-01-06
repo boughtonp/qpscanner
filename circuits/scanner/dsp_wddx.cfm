@@ -1,1 +1,1 @@
-<cfwddx action="cfml2wddx" input="#OutputData#"/>
+<cfcontent type="text/xml"/><cfwddx action="cfml2wddx" input="#OutputData#"/>
