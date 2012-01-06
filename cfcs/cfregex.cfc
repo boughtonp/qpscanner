@@ -281,7 +281,7 @@
 						{ pos = [Offset+Matcher.start()]
 						, len = [Matcher.end()-Matcher.start()]
 						} />
-					<cfloop index="CurGroup" from=1 to=#Matcher.groupCount()#>
+					<cfloop index="local.CurGroup" from=1 to=#Matcher.groupCount()#>
 						<cfset ArrayAppend(CurMatch.pos,Offset+Matcher.start(CurGroup)) />
 						<cfset ArrayAppend(CurMatch.len,Matcher.end(CurGroup)-Matcher.start(CurGroup)) />
 					</cfloop>
@@ -353,13 +353,13 @@
 				</cfcase>
 				<cfcase value="groups">
 					<cfset var CurMatch = [] />
-					<cfloop index="CurGroup" from=1 to=#Matcher.groupCount()#>
+					<cfloop index="local.CurGroup" from=1 to=#Matcher.groupCount()#>
 						<cfset CurMatch[CurGroup] = Matcher.group(CurGroup) />
 					</cfloop>
 				</cfcase>
 				<cfcase value="namedgroups">
 					<cfset var CurMatch = {} />
-					<cfloop index="CurGroup" from=1 to=#Matcher.groupCount()#>
+					<cfloop index="local.CurGroup" from=1 to=#Matcher.groupCount()#>
 						<cfset CurMatch[Arguments.GroupNames[CurGroup]] = Matcher.group(CurGroup) />
 					</cfloop>
 				</cfcase>

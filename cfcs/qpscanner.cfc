@@ -112,7 +112,7 @@
 
 				<cfset process = true/>
 
-				<cfloop index="CurrentExclusion" array=#Variables.Exclusions#>
+				<cfloop index="local.CurrentExclusion" array=#Variables.Exclusions#>
 					<cfif CurrentExclusion.matches( CurrentTarget )>
 						<cfset process = false/>
 						<cfbreak />
@@ -214,7 +214,7 @@
 				<cfset qryResult.QueryCode[CurRow] = qryResult.QueryCode[CurRow].replaceAll( Chr(10)&Chr(10) , Chr(10) ) />
 				<cfif This.showScopeInfo >
 					<cfset qryResult.ScopeList[CurRow] = [] />
-					<cfloop index="CurScope" array="#Variables.Regexes['findScopes'].match( rekCode )#">
+					<cfloop index="local.CurScope" array="#Variables.Regexes['findScopes'].match( rekCode )#">
 						<cfif NOT ArrayFind(qryResult.ScopeList[CurRow],CurScope)>
 							<cfset ArrayAppend(qryResult.ScopeList[CurRow],CurScope)>
 						</cfif>
@@ -222,7 +222,7 @@
 
 					<cfset qryResult.ContainsClientScope[CurRow] = false/>
 					<cfif This.highlightClientScopes>
-						<cfloop index="CurrentScope" list="#This.ClientScopes#">
+						<cfloop index="local.CurrentScope" list="#This.ClientScopes#">
 							<cfif ArrayFind( qryResult.ScopeList[CurRow] , CurrentScope )>
 								<cfset qryResult.ContainsClientScope[CurRow] = true/>
 								<cfbreak/>
@@ -233,7 +233,7 @@
 					<cfset qryResult.ScopeList[CurRow] = ArrayToList(qryResult.ScopeList[CurRow]) />
 				</cfif>
 
-				<cfset QueryTagCode = ArrayToList( Variables.Regexes['findQueryTag'].match( text=Matches[i] , limit=1 ) ) />
+				<cfset var QueryTagCode = ArrayToList( Variables.Regexes['findQueryTag'].match( text=Matches[i] , limit=1 ) ) />
 
 				<cfset BeforeQueryCode = ListFirst ( replace ( ' '&FileData&' ' , Matches[i] , UniqueToken ) , UniqueToken )/>
 
