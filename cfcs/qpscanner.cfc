@@ -106,39 +106,37 @@
 				<cfset var CurrentTarget = Arguments.DirName & '/' & Name />
 
 				<cfset var process = true/>
-
 				<cfloop index="local.CurrentExclusion" array=#Variables.Exclusions#>
 					<cfif CurrentExclusion.matches( CurrentTarget )>
 						<cfset process = false/>
 						<cfbreak />
 					</cfif>
 				</cfloop>
+				<cfif NOT process> <cfcontinue/> </cfif>
 
-				<cfif process>
 
-					<cfif (Type EQ "dir") AND This.recurse >
-						<cfset This.Totals.DirCount = This.Totals.DirCount + 1 />
+				<cfif (Type EQ "dir") AND This.recurse >
+					<cfset This.Totals.DirCount = This.Totals.DirCount + 1 />
 
-						<cfset scan( CurrentTarget )/>
+					<cfset scan( CurrentTarget )/>
 
-					<cfelse>
-						<cfset var Ext = LCase(ListLast(CurrentTarget,'.')) >
+				<cfelse>
+					<cfset var Ext = LCase(ListLast(CurrentTarget,'.')) >
 
-						<cfif Ext EQ 'cfc' OR Ext EQ 'cfm' OR Ext EQ 'cfml'>
+					<cfif Ext EQ 'cfc' OR Ext EQ 'cfm' OR Ext EQ 'cfml'>
 
-							<cfset This.Totals.FileCount = This.Totals.FileCount + 1 />
+						<cfset This.Totals.FileCount = This.Totals.FileCount + 1 />
 
-							<cfset var qryCurData = hunt( CurrentTarget )/>
+						<cfset var qryCurData = hunt( CurrentTarget )/>
 
-							<cfif qryCurData.RecordCount>
-								<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
-							</cfif>
-
+						<cfif qryCurData.RecordCount>
+							<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
 						</cfif>
 
 					</cfif>
 
 				</cfif>
+
 			</cfloop>
 
 		<!--- This can only potentially trigger on first iteration, if This.StartingDir is a file. --->
