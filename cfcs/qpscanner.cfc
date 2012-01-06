@@ -1,6 +1,5 @@
 <cfcomponent output="false" displayname="qpscanner v0.7.5">
 
-	<cffunction name="Struct" returntype="Struct" access="private"><cfreturn Arguments/></cffunction>
 
 	<cffunction name="init" returntype="any" output="false" access="public">
 		<cfargument name="jre"                   type="jre-utils"/>
