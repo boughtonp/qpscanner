@@ -1,4 +1,4 @@
-qpScanner v0.7.4
+qpScanner v0.7.5
 
 
 REQUIREMENTS
@@ -114,7 +114,7 @@ LICENSING & VERSIONS
 
 GPL license (see included gpl-license.txt for details)
 
-* qpScanner v0.7.4
+* qpScanner v0.7.5
 * jre-utils v0.6.0
 * jQuery v1.2.6
 

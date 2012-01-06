@@ -7,7 +7,7 @@
 	<cffunction name="onApplicationStart" returntype="Boolean" output="false">
 		<cfset var Result = True/>
 
-		<cfset Application.Version = "0.7.4"/>
+		<cfset Application.Version = "0.7.5"/>
 
 		<cfset Application.Cfcs.jre      = createObject("component","cfcs.jre-utils").init()/>
 		<cfset Application.Cfcs.Settings = createObject("component","cfcs.settings").init

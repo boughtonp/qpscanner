@@ -1,4 +1,4 @@
-<cfcomponent output="false" displayname="qpscanner v0.7.4">
+<cfcomponent output="false" displayname="qpscanner v0.7.5">
 
 	<cffunction name="Struct" returntype="Struct" access="private"><cfreturn Arguments/></cffunction>
 
@@ -30,7 +30,7 @@
 		<cfset Variables.jre = Arguments.jre/>
 		<cfset StructDelete(This,'jre')/>
 
-		<cfset This.Totals = 
+		<cfset This.Totals =
 			{ AlertCount= 0
 			, QueryCount= 0
 			, FileCount = 0
@@ -88,9 +88,9 @@
 		</cftry>
 
 		<cfset This.Totals.Time = getTickCount() - StartTime/>
-		<cfreturn 
+		<cfreturn
 			{ Data = Variables.AlertData
-			, Info = 
+			, Info =
 				{ Totals  = This.Totals
 				, Timeout = This.Timeout
 				}
@@ -139,11 +139,11 @@
 						<cfset Ext = LCase(ListLast(CurrentTarget,'.')) >
 
 						<cfif Ext EQ 'cfc' OR Ext EQ 'cfm' OR Ext EQ 'cfml'>
-	
+
 							<cfset This.Totals.FileCount = This.Totals.FileCount + 1 />
-	
+
 							<cfset qryCurData = hunt( CurrentTarget )/>
-	
+
 							<cfif qryCurData.RecordCount>
 								<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
 							</cfif>
@@ -240,7 +240,7 @@
 							</cfif>
 						</cfloop>
 					</cfif>
-					
+
 					<cfset qryResult.ScopeList[CurRow] = ArrayToList(qryResult.ScopeList[CurRow]) />
 				</cfif>
 
