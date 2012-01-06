@@ -98,6 +98,14 @@
 				<do action="layout.blank"/>
 			</cf:case>
 
+			<cf:case value="JSON">
+				<include template="dsp_json" contentvariable="Content">
+					<parameter name="Data" value="#Results.Data#"/>
+					<parameter name="Info" value="#Results.Info#"/>
+				</include>
+				<do action="layout.blank"/>
+			</cf:case>
+
 			<cf:defaultcase>
 				<cf:dump var="#Results#"/>
 				<cf:abort/>
