@@ -11,8 +11,7 @@
 
 		<cfset Application.Cfcs.jre      = createObject("component","cfcs.jre-utils").init()/>
 		<cfset Application.Cfcs.Settings = createObject("component","cfcs.settings").init
-			( jre             : Application.Cfcs.jre
-			, ConfigDirectory : expandPath('./config')
+			( ConfigDirectory : expandPath('./config')
 			)/>
 		<cfset Application.Cfcs.Scanner  = createObject("component","cfcs.qpscanner")/>
 

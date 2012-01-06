@@ -2,10 +2,7 @@
 
 
 	<cffunction name="init" returntype="any" output="false" access="public">
-		<cfargument name="jre"             type="jre-utils"/>
 		<cfargument name="ConfigDirectory" type="String"/>
-
-		<cfset Variables.jre = Arguments.jre/>
 
 		<cfset This.ConfigDirectory = Arguments.ConfigDirectory/>
 
@@ -72,7 +69,6 @@
 		<cfset var Result = ""/>
 		<cfset var CurDir = -1/>
 		<cfset var DirList = "{home-directory},/,."/>
-		<cfset var jre = Variables.jre/>
 
 		<cfloop index="CurDir" list="#DirList#">
 			<cfif DirectoryExists( expandPath(CurDir) )>
@@ -81,10 +77,7 @@
 			</cfif>
 		</cfloop>
 
-		<cfset Result = jre.replace( Result , '[\\/]+' , '/' , 'all' )/>
-		<cfset Result = jre.replace( Result , '(<!(:))/$' , '' )/>
-
-		<cfreturn Result/>
+		<cfreturn Result.replaceAll('[\\/]+','/').replaceAll('(<!(:))/$','')  />
 	</cffunction>
 
 
