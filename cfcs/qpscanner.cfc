@@ -92,25 +92,20 @@
 
 	<cffunction name="scan" returntype="void" output="false" access="public">
 		<cfargument name="DirName"           type="string"/>
-		<cfset var qryDir     = -1/>
-		<cfset var qryCurData = -1/>
-		<cfset var CurrentTarget = -1/>
-		<cfset var process = true/>
-		<cfset var Ext = 0 />
 
 		<cfif DirectoryExists(Arguments.DirName)>
 
 			<cfdirectory
-				name="qryDir"
+				name="local.qryDir"
 				directory="#Arguments.DirName#"
 				sort="type ASC,name ASC"
 			/>
 
 			<cfloop query="qryDir">
 
-				<cfset CurrentTarget = Arguments.DirName & '/' & Name />
+				<cfset var CurrentTarget = Arguments.DirName & '/' & Name />
 
-				<cfset process = true/>
+				<cfset var process = true/>
 
 				<cfloop index="local.CurrentExclusion" array=#Variables.Exclusions#>
 					<cfif CurrentExclusion.matches( CurrentTarget )>
@@ -127,13 +122,13 @@
 						<cfset scan( CurrentTarget )/>
 
 					<cfelse>
-						<cfset Ext = LCase(ListLast(CurrentTarget,'.')) >
+						<cfset var Ext = LCase(ListLast(CurrentTarget,'.')) >
 
 						<cfif Ext EQ 'cfc' OR Ext EQ 'cfm' OR Ext EQ 'cfml'>
 
 							<cfset This.Totals.FileCount = This.Totals.FileCount + 1 />
 
-							<cfset qryCurData = hunt( CurrentTarget )/>
+							<cfset var qryCurData = hunt( CurrentTarget )/>
 
 							<cfif qryCurData.RecordCount>
 								<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
@@ -150,7 +145,7 @@
 		<cfelseif FileExists(Arguments.DirName)>
 			<cfset This.Totals.FileCount = This.Totals.FileCount + 1 />
 
-			<cfset qryCurData = hunt( This.StartingDir )/>
+			<cfset var qryCurData = hunt( This.StartingDir )/>
 
 			<cfif qryCurData.RecordCount>
 				<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
@@ -164,31 +159,19 @@
 
 	<cffunction name="hunt" returntype="Query" output="false">
 		<cfargument name="FileName"    type="String"/>
-		<cfset var FileData        = -1/>
-		<cfset var Matches         = -1/>
-		<cfset var i               = -1/>
-		<cfset var info            = -1/>
-		<cfset var rekCode         = -1/>
-		<cfset var QueryCode       = -1/>
-		<cfset var CurRow          = -1/>
-		<cfset var CurFileId       = -1/>
-		<cfset var StartLine       = -1/>
-		<cfset var LineCount       = -1/>
-		<cfset var BeforeQueryCode = -1/>
-		<cfset var isRisk          = -1/>
 		<cfset var UniqueToken = Chr(65536)/>
 		<cfset var qryResult   = QueryNew(Variables.ResultFields)/>
 
 
-		<cffile action="read" file="#Arguments.FileName#" variable="FileData"/>
+		<cffile action="read" file="#Arguments.FileName#" variable="local.FileData"/>
 
-		<cfset Matches = Variables.Regexes['findQueries'].match( FileData )/>
+		<cfset var Matches = Variables.Regexes['findQueries'].match( FileData )/>
 		<cfset This.Totals.QueryCount += ArrayLen(Matches) />
 
-		<cfloop index="i" from="1" to="#ArrayLen(Matches)#">
+		<cfloop index="local.i" from="1" to="#ArrayLen(Matches)#">
 
-			<cfset QueryCode = Variables.Regexes['findQueryTag'].replace( Matches[i] , '' )/>
-			<cfset rekCode = duplicate(QueryCode) />
+			<cfset var QueryCode = Variables.Regexes['findQueryTag'].replace( Matches[i] , '' )/>
+			<cfset var rekCode = duplicate(QueryCode) />
 			<cfset rekCode = Variables.Regexes['killParams'].replace( rekCode , '' )/>
 			<cfset rekCode = Variables.Regexes['killCfTag'].replace( rekCode , '' )/>
 
@@ -199,7 +182,7 @@
 				<cfset rekCode = Variables.Regexes['killBuiltIn'].replace( rekCode , '' )/>
 			</cfif>
 
-			<cfset isRisk = find( '##' , rekCode )/>
+			<cfset var isRisk = find( '##' , rekCode )/>
 
 
 			<cfif (NOT This.scanQoQ) AND Variables.Regexes['isQueryOfQuery'].matches( Matches[i] )>
@@ -208,7 +191,7 @@
 
 
 			<cfif isRisk>
-				<cfset CurRow = QueryAddRow(qryResult)/>
+				<cfset var CurRow = QueryAddRow(qryResult)/>
 
 				<cfset qryResult.QueryCode[CurRow] = QueryCode.replaceAll( Chr(13) , Chr(10) ) />
 				<cfset qryResult.QueryCode[CurRow] = qryResult.QueryCode[CurRow].replaceAll( Chr(10)&Chr(10) , Chr(10) ) />
@@ -235,10 +218,10 @@
 
 				<cfset var QueryTagCode = ArrayToList( Variables.Regexes['findQueryTag'].match( text=Matches[i] , limit=1 ) ) />
 
-				<cfset BeforeQueryCode = ListFirst ( replace ( ' '&FileData&' ' , Matches[i] , UniqueToken ) , UniqueToken )/>
+				<cfset var BeforeQueryCode = ListFirst ( replace ( ' '&FileData&' ' , Matches[i] , UniqueToken ) , UniqueToken )/>
 
-				<cfset StartLine = 1+Variables.Regexes['Newline'].matches( BeforeQueryCode , 'count' ) />
-				<cfset LineCount = Variables.Regexes['Newline'].matches( Matches[i] , 'count' ) />
+				<cfset var StartLine = 1+Variables.Regexes['Newline'].matches( BeforeQueryCode , 'count' ) />
+				<cfset var LineCount = Variables.Regexes['Newline'].matches( Matches[i] , 'count' ) />
 
 				<cfset qryResult.QueryStartLine[CurRow] = StartLine/>
 				<cfset qryResult.QueryEndLine[CurRow]   = StartLine + LineCount />
@@ -252,7 +235,7 @@
 
 		</cfloop>
 
-		<cfset CurFileId = createUUID()/>
+		<cfset var CurFileId = createUUID()/>
 		<cfloop query="qryResult">
 			<cfset qryResult.FileId[qryResult.CurrentRow]          = CurFileId />
 			<cfset qryResult.FileName[qryResult.CurrentRow]        = Arguments.FileName />
@@ -268,12 +251,11 @@
 	<cffunction name="QueryAppend" returntype="Query" output="false" access="private">
 		<cfargument name="QueryOne" type="Query"/>
 		<cfargument name="QueryTwo" type="Query"/>
-		<cfset var Result = -1/>
 		<!--- Bug fix for CF9 --->
 		<cfif NOT Arguments.QueryOne.RecordCount><cfreturn Arguments.QueryTwo /></cfif>
 		<cfif NOT Arguments.QueryTwo.RecordCount><cfreturn Arguments.QueryOne /></cfif>
 		<!--- / --->
-		<cfquery name="Result" dbtype="Query">
+		<cfquery name="local.Result" dbtype="Query">
 			SELECT * FROM Arguments.QueryOne
 			UNION SELECT * FROM Arguments.QueryTwo
 		</cfquery>
