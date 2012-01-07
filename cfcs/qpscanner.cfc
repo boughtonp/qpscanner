@@ -48,7 +48,7 @@
 
 		<cfset Variables.Exclusions = [] />
 		<cfloop index="local.CurrentExclusion" list="#This.Exclusions#" delimiters=";">
-			<cfset ArrayAppend( Variables.Exclusions , Variables.cfregex.compile(CurrentExclusion) ) />
+			<cfset ArrayAppend( Variables.Exclusions , new cfregex(CurrentExclusion) ) />
 		</cfloop>
 
 
