@@ -34,7 +34,6 @@
 
 		<cfset Variables.Regexes =
 			{ findQueries      = new cfregex( '(?si)(?:<cfquery\b)(?:[^<]++|<(?!/cfquery>))+(?=</cfquery>)' )
-			, findQueryTag     = new cfregex( '(?si)(<cfquery[^p][^>]++>)' )
 			, isQueryOfQuery   = new cfregex( '(?si)dbtype\s*=\s*["'']query["'']' )
 			, killParams       = new cfregex( '(?si)<cfqueryparam[^>]++>' )
 			, killCfTag        = new cfregex( '(?si)<cf[a-z]{2,}[^>]*+>' ) <!--- Deliberately excludes Custom Tags and CFX --->
@@ -168,7 +167,8 @@
 
 		<cfloop index="local.i" from="1" to="#ArrayLen(Matches)#">
 
-			<cfset var QueryCode = Variables.Regexes['findQueryTag'].replace( Matches[i].Match , '' )/>
+			<cfset var QueryTagCode = ListFirst( Matches[i].Match , '>' ) />
+			<cfset var QueryCode = ListRest( Matches[i].Match , '>' ) />
 			<cfset var rekCode = duplicate(QueryCode) />
 			<cfset rekCode = Variables.Regexes['killParams'].replace( rekCode , '' )/>
 			<cfset rekCode = Variables.Regexes['killCfTag'].replace( rekCode , '' )/>
@@ -213,8 +213,6 @@
 
 					<cfset qryResult.ScopeList[CurRow] = ArrayToList(qryResult.ScopeList[CurRow]) />
 				</cfif>
-
-				<cfset var QueryTagCode = ArrayToList( Variables.Regexes['findQueryTag'].match( text=Matches[i] , limit=1 ) ) />
 
 				<cfset var BeforeQueryCode = left( FileData , Matches[i].Pos ) />
 
