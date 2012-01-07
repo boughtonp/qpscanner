@@ -2,9 +2,10 @@
 
 	"info" :
 	{ "count" :
-		{ "alerts"  : #Info.Totals.AlertCount#
-		, "queries" : #Info.Totals.QueryCount#
-		, "files"   : #Info.Totals.FileCount#
+		{ "alerts"    : #Info.Totals.AlertCount#
+		, "riskfiles" : #Info.Totals.RiskFileCount#
+		, "queries"   : #Info.Totals.QueryCount#
+		, "files"     : #Info.Totals.FileCount#
 		}
 	, "timetaken" : #Info.Totals.Time#
 	, "timeout"   : #Info.Timeout#

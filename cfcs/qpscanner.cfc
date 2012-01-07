@@ -23,10 +23,11 @@
 		<cfset This.ClientScopes = ListToArray(This.ClientScopes) />
 
 		<cfset This.Totals =
-			{ AlertCount= 0
-			, QueryCount= 0
-			, FileCount = 0
-			, Time      = 0
+			{ AlertCount    = 0
+			, QueryCount    = 0
+			, FileCount     = 0
+			, RiskFileCount = 0
+			, Time          = 0
 			}/>
 
 		<cfset This.Timeout = false/>
@@ -228,6 +229,9 @@
 		<cfset This.Totals.QueryCount += ArrayLen(Matches) />
 		<cfset This.Totals.AlertCount += qryResult.RecordCount />
 		<cfset This.Totals.FileCount++ />
+		<cfif qryResult.RecordCount >
+			<cfset This.Totals.RiskFileCount++ />
+		</cfif>
 
 		<cfreturn qryResult/>
 	</cffunction>
