@@ -180,51 +180,48 @@
 				<cfset rekCode = Variables.Regexes['killBuiltIn'].replace( rekCode , '' )/>
 			</cfif>
 
-			<cfset var isRisk = find( '##' , rekCode )/>
-
-			<cfif (NOT This.scanQoQ) AND Variables.Regexes['isQueryOfQuery'].matches( Matches[i].Match )>
-				<cfset isRisk = false/>
+			<cfif (NOT find( '##' , rekCode ))
+				OR (NOT This.scanQoQ AND Variables.Regexes['isQueryOfQuery'].matches( Matches[i].Match ) )
+				>
+				<cfcontinue />
 			</cfif>
 
-			<cfif isRisk>
-				<cfset var CurRow = QueryAddRow(qryResult)/>
+			<cfset var CurRow = QueryAddRow(qryResult)/>
 
-				<cfset qryResult.QueryCode[CurRow] = QueryCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ) />
-				<cfset qryResult.QueryCode[CurRow] = qryResult.QueryCode[CurRow].replaceAll( Chr(13) , Chr(10) ) />
+			<cfset qryResult.QueryCode[CurRow] = QueryCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ) />
+			<cfset qryResult.QueryCode[CurRow] = qryResult.QueryCode[CurRow].replaceAll( Chr(13) , Chr(10) ) />
 
-				<cfif This.showScopeInfo >
-					<cfset var ScopesFound = {} />
+			<cfif This.showScopeInfo >
+				<cfset var ScopesFound = {} />
 
-					<cfloop index="local.CurScope" array="#Variables.Regexes['findScopes'].match( rekCode )#">
-						<cfset ScopesFound[CurScope] = true />
+				<cfloop index="local.CurScope" array="#Variables.Regexes['findScopes'].match( rekCode )#">
+					<cfset ScopesFound[CurScope] = true />
+				</cfloop>
+
+				<cfset qryResult.ContainsClientScope[CurRow] = false/>
+				<cfif This.highlightClientScopes>
+					<cfloop index="local.CurrentScope" array="#This.ClientScopes#">
+						<cfif StructKeyExists( ScopesFound , CurrentScope )>
+							<cfset qryResult.ContainsClientScope[CurRow] = true/>
+							<cfbreak/>
+						</cfif>
 					</cfloop>
-
-					<cfset qryResult.ContainsClientScope[CurRow] = false/>
-					<cfif This.highlightClientScopes>
-						<cfloop index="local.CurrentScope" array="#This.ClientScopes#">
-							<cfif StructKeyExists( ScopesFound , CurrentScope )>
-								<cfset qryResult.ContainsClientScope[CurRow] = true/>
-								<cfbreak/>
-							</cfif>
-						</cfloop>
-					</cfif>
-
-					<cfset qryResult.ScopeList[CurRow] = StructKeyList(ScopesFound) />
 				</cfif>
 
-				<cfset var BeforeQueryCode = left( FileData , Matches[i].Pos ) />
+				<cfset qryResult.ScopeList[CurRow] = StructKeyList(ScopesFound) />
+			</cfif>
 
-				<cfset var StartLine = 1+Variables.Regexes['Newline'].matches( BeforeQueryCode , 'count' ) />
-				<cfset var LineCount = Variables.Regexes['Newline'].matches( Matches[i].Match , 'count' ) />
+			<cfset var BeforeQueryCode = left( FileData , Matches[i].Pos ) />
 
-				<cfset qryResult.QueryStartLine[CurRow] = StartLine/>
-				<cfset qryResult.QueryEndLine[CurRow]   = StartLine + LineCount />
-				<cfset qryResult.QueryName[CurRow]      = ArrayToList(Variables.Regexes['findQueryName'].match(text=QueryTagCode,limit=1)) />
-				<cfset qryResult.QueryId[CurRow]        = createUuid() />
-				<cfif NOT Len( qryResult.QueryName[CurRow] )>
-					<cfset qryResult.QueryName[CurRow] = "[unknown]"/>
-				</cfif>
+			<cfset var StartLine = 1+Variables.Regexes['Newline'].matches( BeforeQueryCode , 'count' ) />
+			<cfset var LineCount = Variables.Regexes['Newline'].matches( Matches[i].Match , 'count' ) />
 
+			<cfset qryResult.QueryStartLine[CurRow] = StartLine/>
+			<cfset qryResult.QueryEndLine[CurRow]   = StartLine + LineCount />
+			<cfset qryResult.QueryName[CurRow]      = ArrayToList(Variables.Regexes['findQueryName'].match(text=QueryTagCode,limit=1)) />
+			<cfset qryResult.QueryId[CurRow]        = createUuid() />
+			<cfif NOT Len( qryResult.QueryName[CurRow] )>
+				<cfset qryResult.QueryName[CurRow] = "[unknown]"/>
 			</cfif>
 
 		</cfloop>
