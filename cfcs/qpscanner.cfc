@@ -26,7 +26,6 @@
 			{ AlertCount= 0
 			, QueryCount= 0
 			, FileCount = 0
-			, DirCount  = 0
 			, Time      = 0
 			}/>
 
@@ -117,8 +116,6 @@
 				<cfif (Type EQ "dir") AND This.recurse >
 
 					<cfset scan( CurrentTarget )/>
-
-					<cfset This.Totals.DirCount++ />
 
 				<cfelseif Type EQ "file">
 
