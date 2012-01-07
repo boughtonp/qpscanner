@@ -193,25 +193,25 @@
 
 				<cfset qryResult.QueryCode[CurRow] = QueryCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ) />
 				<cfset qryResult.QueryCode[CurRow] = qryResult.QueryCode[CurRow].replaceAll( Chr(13) , Chr(10) ) />
+
 				<cfif This.showScopeInfo >
-					<cfset qryResult.ScopeList[CurRow] = [] />
+
+					<cfset var ScopesFound = {} />
 					<cfloop index="local.CurScope" array="#Variables.Regexes['findScopes'].match( rekCode )#">
-						<cfif NOT ArrayFind(qryResult.ScopeList[CurRow],CurScope)>
-							<cfset ArrayAppend(qryResult.ScopeList[CurRow],CurScope)>
-						</cfif>
+						<cfset ScopesFound[CurScope] = true />
 					</cfloop>
 
 					<cfset qryResult.ContainsClientScope[CurRow] = false/>
 					<cfif This.highlightClientScopes>
 						<cfloop index="local.CurrentScope" list="#This.ClientScopes#">
-							<cfif ArrayFind( qryResult.ScopeList[CurRow] , CurrentScope )>
+							<cfif StructKeyExists( ScopesFound , CurrentScope )>
 								<cfset qryResult.ContainsClientScope[CurRow] = true/>
 								<cfbreak/>
 							</cfif>
 						</cfloop>
 					</cfif>
 
-					<cfset qryResult.ScopeList[CurRow] = ArrayToList(qryResult.ScopeList[CurRow]) />
+					<cfset qryResult.ScopeList[CurRow] = StructKeyList(ScopesFound) />
 				</cfif>
 
 				<cfset var BeforeQueryCode = left( FileData , Matches[i].Pos ) />
