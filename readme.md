@@ -1,4 +1,4 @@
-qpScanner v0.7.5
+qpScanner RC 0.7.5
 
 
 REQUIREMENTS
