@@ -1,5 +1,6 @@
 <cfcomponent output="false" displayname="qpscanner v0.7.5">
 
+
 	<cffunction name="init" returntype="any" output="false" access="public">
 		<cfargument name="StartingDir"           type="String"  required        hint="Directory to begin scanning the contents of."/>
 		<cfargument name="OutputFormat"          type="String"  default="html"  hint="Format of scan results: [html,wddx]"/>
@@ -51,7 +52,6 @@
 			<cfset ArrayAppend( Variables.Exclusions , new cfregex(CurrentExclusion) ) />
 		</cfloop>
 
-
 		<cfreturn This/>
 	</cffunction>
 
@@ -65,7 +65,7 @@
 		</cfif>
 
 		<cftry>
-			<cfset scan(This.StartingDir)/>
+			<cfset scan(This.StartingDir) />
 
 			<!--- TODO: MINOR: CHECK: Is this the best way to handle this? --->
 			<!--- If timeout occurs, ignore error and proceed. --->
@@ -79,6 +79,7 @@
 		</cftry>
 
 		<cfset This.Totals.Time = getTickCount() - StartTime/>
+
 		<cfreturn
 			{ Data = Variables.AlertData
 			, Info =
@@ -91,7 +92,7 @@
 
 
 	<cffunction name="scan" returntype="void" output="false" access="public">
-		<cfargument name="DirName"           type="string"/>
+		<cfargument name="DirName" type="string" required />
 
 		<cfif DirectoryExists(Arguments.DirName)>
 
@@ -125,7 +126,7 @@
 
 					<cfif Ext EQ 'cfc' OR Ext EQ 'cfm' OR Ext EQ 'cfml'>
 
-						<cfset This.Totals.FileCount = This.Totals.FileCount + 1 />
+						<cfset This.Totals.FileCount++ />
 
 						<cfset var qryCurData = hunt( CurrentTarget )/>
 
@@ -141,7 +142,7 @@
 
 		<!--- This can only potentially trigger on first iteration, if This.StartingDir is a file. --->
 		<cfelseif FileExists(Arguments.DirName)>
-			<cfset This.Totals.FileCount = This.Totals.FileCount + 1 />
+			<cfset This.Totals.FileCount++ />
 
 			<cfset var qryCurData = hunt( This.StartingDir )/>
 
@@ -154,16 +155,14 @@
 
 
 
-
 	<cffunction name="hunt" returntype="Query" output="false">
-		<cfargument name="FileName"    type="String"/>
-		<cfset var UniqueToken = Chr(65536)/>
-		<cfset var qryResult   = QueryNew(Variables.ResultFields)/>
-
+		<cfargument name="FileName"    type="String" required />
+		<cfset var qryResult = QueryNew(Variables.ResultFields)/>
 
 		<cffile action="read" file="#Arguments.FileName#" variable="local.FileData"/>
 
 		<cfset var Matches = Variables.Regexes['findQueries'].find( text=FileData , returntype='info' )/>
+
 		<cfset This.Totals.QueryCount += ArrayLen(Matches) />
 
 		<cfloop index="local.i" from="1" to="#ArrayLen(Matches)#">
@@ -183,11 +182,9 @@
 
 			<cfset var isRisk = find( '##' , rekCode )/>
 
-
 			<cfif (NOT This.scanQoQ) AND Variables.Regexes['isQueryOfQuery'].matches( Matches[i].Match )>
 				<cfset isRisk = false/>
 			</cfif>
-
 
 			<cfif isRisk>
 				<cfset var CurRow = QueryAddRow(qryResult)/>
@@ -196,8 +193,8 @@
 				<cfset qryResult.QueryCode[CurRow] = qryResult.QueryCode[CurRow].replaceAll( Chr(13) , Chr(10) ) />
 
 				<cfif This.showScopeInfo >
-
 					<cfset var ScopesFound = {} />
+
 					<cfloop index="local.CurScope" array="#Variables.Regexes['findScopes'].match( rekCode )#">
 						<cfset ScopesFound[CurScope] = true />
 					</cfloop>
@@ -239,15 +236,16 @@
 			<cfset qryResult.QueryTotalCount[qryResult.CurrentRow] = ArrayLen(Matches) />
 			<cfset qryResult.QueryAlertCount[qryResult.CurrentRow] = qryResult.RecordCount />
 		</cfloop>
-		<cfset This.Totals.AlertCount = This.Totals.AlertCount + qryResult.RecordCount />
+		<cfset This.Totals.AlertCount += qryResult.RecordCount />
 
 		<cfreturn qryResult/>
 	</cffunction>
 
 
+
 	<cffunction name="QueryAppend" returntype="Query" output="false" access="private">
-		<cfargument name="QueryOne" type="Query"/>
-		<cfargument name="QueryTwo" type="Query"/>
+		<cfargument name="QueryOne" type="Query" required />
+		<cfargument name="QueryTwo" type="Query" required />
 		<!--- Bug fix for CF9 --->
 		<cfif NOT Arguments.QueryOne.RecordCount><cfreturn Arguments.QueryTwo /></cfif>
 		<cfif NOT Arguments.QueryTwo.RecordCount><cfreturn Arguments.QueryOne /></cfif>
@@ -258,8 +256,6 @@
 		</cfquery>
 		<cfreturn Result/>
 	</cffunction>
-
-
 
 
 </cfcomponent>
