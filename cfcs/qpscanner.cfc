@@ -191,8 +191,8 @@
 			<cfif isRisk>
 				<cfset var CurRow = QueryAddRow(qryResult)/>
 
-				<cfset qryResult.QueryCode[CurRow] = QueryCode.replaceAll( Chr(13) , Chr(10) ) />
-				<cfset qryResult.QueryCode[CurRow] = qryResult.QueryCode[CurRow].replaceAll( Chr(10)&Chr(10) , Chr(10) ) />
+				<cfset qryResult.QueryCode[CurRow] = QueryCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ) />
+				<cfset qryResult.QueryCode[CurRow] = qryResult.QueryCode[CurRow].replaceAll( Chr(13) , Chr(10) ) />
 				<cfif This.showScopeInfo >
 					<cfset qryResult.ScopeList[CurRow] = [] />
 					<cfloop index="local.CurScope" array="#Variables.Regexes['findScopes'].match( rekCode )#">
