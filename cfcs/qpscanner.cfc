@@ -168,9 +168,9 @@
 		<cfloop index="local.i" from="1" to="#ArrayLen(Matches)#">
 
 			<cfset var QueryTagCode = ListFirst( Matches[i].Match , '>' ) />
-			<cfset var QueryCode = ListRest( Matches[i].Match , '>' ) />
-			<cfset var rekCode = duplicate(QueryCode) />
-			<cfset rekCode = Variables.Regexes['killParams'].replace( rekCode , '' )/>
+			<cfset var QueryCode    = ListRest( Matches[i].Match , '>' ) />
+
+			<cfset var rekCode = Variables.Regexes['killParams'].replace( QueryCode , '' )/>
 			<cfset rekCode = Variables.Regexes['killCfTag'].replace( rekCode , '' )/>
 
 			<cfif NOT This.scanOrderBy>
