@@ -128,8 +128,6 @@
 
 						<cfset var qryCurData = hunt( CurrentTarget )/>
 
-						<cfset This.Totals.FileCount++ />
-
 						<cfif qryCurData.RecordCount>
 							<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
 						</cfif>
@@ -144,8 +142,6 @@
 		<cfelseif FileExists(Arguments.DirName)>
 
 			<cfset var qryCurData = hunt( This.StartingDir )/>
-
-			<cfset This.Totals.FileCount++ />
 
 			<cfif qryCurData.RecordCount>
 				<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
@@ -234,6 +230,7 @@
 		</cfloop>
 		<cfset This.Totals.QueryCount += ArrayLen(Matches) />
 		<cfset This.Totals.AlertCount += qryResult.RecordCount />
+		<cfset This.Totals.FileCount++ />
 
 		<cfreturn qryResult/>
 	</cffunction>
