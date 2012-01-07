@@ -32,7 +32,7 @@
 
 		<cfset This.Timeout = false/>
 
-		<cfset Variables.ResultFields = "FileId,FileName,QueryAlertCount,QueryTotalCount,QueryId,QueryName,QueryStartLine,QueryEndLine,ScopeList,ContainsClientScope,QueryCode"/>
+		<cfset Variables.ResultFields = "FileId,FileName,QueryAlertCount,QueryTotalCount,QueryId,QueryName,QueryStartLine,QueryEndLine,ScopeList,ContainsClientScope,QueryCode" />
 		<cfset Variables.AlertData = QueryNew(Variables.ResultFields)/>
 
 		<cfset Variables.Regexes =
@@ -103,7 +103,6 @@
 			/>
 
 			<cfloop query="qryDir">
-
 				<cfset var CurrentTarget = Arguments.DirName & '/' & Name />
 
 				<cfset var process = true/>
@@ -115,20 +114,21 @@
 				</cfloop>
 				<cfif NOT process> <cfcontinue/> </cfif>
 
-
 				<cfif (Type EQ "dir") AND This.recurse >
-					<cfset This.Totals.DirCount = This.Totals.DirCount + 1 />
 
 					<cfset scan( CurrentTarget )/>
 
-				<cfelse>
+					<cfset This.Totals.DirCount++ />
+
+				<cfelseif Type EQ "file">
+
 					<cfset var Ext = LCase(ListLast(CurrentTarget,'.')) >
 
 					<cfif Ext EQ 'cfc' OR Ext EQ 'cfm' OR Ext EQ 'cfml'>
 
-						<cfset This.Totals.FileCount++ />
-
 						<cfset var qryCurData = hunt( CurrentTarget )/>
+
+						<cfset This.Totals.FileCount++ />
 
 						<cfif qryCurData.RecordCount>
 							<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
@@ -142,9 +142,10 @@
 
 		<!--- This can only potentially trigger on first iteration, if This.StartingDir is a file. --->
 		<cfelseif FileExists(Arguments.DirName)>
-			<cfset This.Totals.FileCount++ />
 
 			<cfset var qryCurData = hunt( This.StartingDir )/>
+
+			<cfset This.Totals.FileCount++ />
 
 			<cfif qryCurData.RecordCount>
 				<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
@@ -163,12 +164,10 @@
 
 		<cfset var Matches = Variables.Regexes['findQueries'].find( text=FileData , returntype='info' )/>
 
-		<cfset This.Totals.QueryCount += ArrayLen(Matches) />
+		<cfloop index="CurMatch" array="#Matches#">
 
-		<cfloop index="local.i" from="1" to="#ArrayLen(Matches)#">
-
-			<cfset var QueryTagCode = ListFirst( Matches[i].Match , '>' ) />
-			<cfset var QueryCode    = ListRest( Matches[i].Match , '>' ) />
+			<cfset var QueryTagCode = ListFirst( CurMatch.Match , '>' ) />
+			<cfset var QueryCode    = ListRest( CurMatch.Match , '>' ) />
 
 			<cfset var rekCode = Variables.Regexes['killParams'].replace( QueryCode , '' )/>
 			<cfset rekCode = Variables.Regexes['killCfTag'].replace( rekCode , '' )/>
@@ -181,7 +180,7 @@
 			</cfif>
 
 			<cfif (NOT find( '##' , rekCode ))
-				OR (NOT This.scanQoQ AND Variables.Regexes['isQueryOfQuery'].matches( Matches[i].Match ) )
+				OR (NOT This.scanQoQ AND Variables.Regexes['isQueryOfQuery'].matches( CurMatch.Match ) )
 				>
 				<cfcontinue />
 			</cfif>
@@ -211,10 +210,10 @@
 				<cfset qryResult.ScopeList[CurRow] = StructKeyList(ScopesFound) />
 			</cfif>
 
-			<cfset var BeforeQueryCode = left( FileData , Matches[i].Pos ) />
+			<cfset var BeforeQueryCode = left( FileData , CurMatch.Pos ) />
 
 			<cfset var StartLine = 1+Variables.Regexes['Newline'].matches( BeforeQueryCode , 'count' ) />
-			<cfset var LineCount = Variables.Regexes['Newline'].matches( Matches[i].Match , 'count' ) />
+			<cfset var LineCount = Variables.Regexes['Newline'].matches( CurMatch.Match , 'count' ) />
 
 			<cfset qryResult.QueryStartLine[CurRow] = StartLine/>
 			<cfset qryResult.QueryEndLine[CurRow]   = StartLine + LineCount />
@@ -233,6 +232,7 @@
 			<cfset qryResult.QueryTotalCount[qryResult.CurrentRow] = ArrayLen(Matches) />
 			<cfset qryResult.QueryAlertCount[qryResult.CurrentRow] = qryResult.RecordCount />
 		</cfloop>
+		<cfset This.Totals.QueryCount += ArrayLen(Matches) />
 		<cfset This.Totals.AlertCount += qryResult.RecordCount />
 
 		<cfreturn qryResult/>
