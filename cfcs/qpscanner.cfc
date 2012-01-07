@@ -33,7 +33,7 @@
 		<cfset Variables.AlertData = QueryNew(Variables.ResultFields)/>
 
 		<cfset Variables.Regexes =
-			{ findQueries      = new cfregex( '(?si)(<cfquery\b)(?:[^<]++|<(?!/cfquery>))+(?=</cfquery>)' )
+			{ findQueries      = new cfregex( '(?si)(?:<cfquery\b)(?:[^<]++|<(?!/cfquery>))+(?=</cfquery>)' )
 			, findQueryTag     = new cfregex( '(?si)(<cfquery[^p][^>]++>)' )
 			, isQueryOfQuery   = new cfregex( '(?si)dbtype\s*=\s*["'']query["'']' )
 			, killParams       = new cfregex( '(?si)<cfqueryparam[^>]++>' )
@@ -163,12 +163,12 @@
 
 		<cffile action="read" file="#Arguments.FileName#" variable="local.FileData"/>
 
-		<cfset var Matches = Variables.Regexes['findQueries'].match( FileData )/>
+		<cfset var Matches = Variables.Regexes['findQueries'].find( text=FileData , returntype='info' )/>
 		<cfset This.Totals.QueryCount += ArrayLen(Matches) />
 
 		<cfloop index="local.i" from="1" to="#ArrayLen(Matches)#">
 
-			<cfset var QueryCode = Variables.Regexes['findQueryTag'].replace( Matches[i] , '' )/>
+			<cfset var QueryCode = Variables.Regexes['findQueryTag'].replace( Matches[i].Match , '' )/>
 			<cfset var rekCode = duplicate(QueryCode) />
 			<cfset rekCode = Variables.Regexes['killParams'].replace( rekCode , '' )/>
 			<cfset rekCode = Variables.Regexes['killCfTag'].replace( rekCode , '' )/>
@@ -183,7 +183,7 @@
 			<cfset var isRisk = find( '##' , rekCode )/>
 
 
-			<cfif (NOT This.scanQoQ) AND Variables.Regexes['isQueryOfQuery'].matches( Matches[i] )>
+			<cfif (NOT This.scanQoQ) AND Variables.Regexes['isQueryOfQuery'].matches( Matches[i].Match )>
 				<cfset isRisk = false/>
 			</cfif>
 
@@ -216,10 +216,10 @@
 
 				<cfset var QueryTagCode = ArrayToList( Variables.Regexes['findQueryTag'].match( text=Matches[i] , limit=1 ) ) />
 
-				<cfset var BeforeQueryCode = ListFirst ( replace ( ' '&FileData&' ' , Matches[i] , UniqueToken ) , UniqueToken )/>
+				<cfset var BeforeQueryCode = left( FileData , Matches[i].Pos ) />
 
 				<cfset var StartLine = 1+Variables.Regexes['Newline'].matches( BeforeQueryCode , 'count' ) />
-				<cfset var LineCount = Variables.Regexes['Newline'].matches( Matches[i] , 'count' ) />
+				<cfset var LineCount = Variables.Regexes['Newline'].matches( Matches[i].Match , 'count' ) />
 
 				<cfset qryResult.QueryStartLine[CurRow] = StartLine/>
 				<cfset qryResult.QueryEndLine[CurRow]   = StartLine + LineCount />
