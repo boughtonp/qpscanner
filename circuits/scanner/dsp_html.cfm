@@ -7,7 +7,7 @@
 	<cfoutput>
 		<p>Found #Info.Totals.AlertCount# potential risks across #Info.Totals.RiskFileCount# files,
 			out of #Info.Totals.QueryCount# total queries in #Info.Totals.FileCount# scanned files,
-			taking approx #(Info.Totals.Time\100)/10# seconds <cfif Info.Timeout>(timed out)</cfif>.</p>
+			taking approx #(Info.Totals.Time\100)/10# seconds<cfif Info.Timeout> (timed out)</cfif>.</p>
 	</cfoutput>
 
 <cfif Data.RecordCount>
