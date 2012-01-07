@@ -74,15 +74,12 @@ adverse affect on performance.
 KNOWN ISSUES
 ============
 
-This is a development release of QueryParam Scanner, and this list of issues
-may not be a complete one. Always ensure you have a recent backup of your code.
+At time of writing, there are no known issues with qpScanner.
 
-There is one known issue with this version of qpScanner:
+Visit the Issue Tracker for details of any that might since have been raised, 
+or to report any issues that you find:
 
-1. Incorrect Line Numbers With Identical Queries
-If you have a file with multiple identical queries (same name/attributes/SQL),
-QueryParam Scanner will report line numbers correctly for only the first of
-the queries.
+https://github.com/boughtonp/qpscanner/issues
 
 
 
@@ -91,7 +88,6 @@ SUPPORT
 
 For help or support, please see the project page at Hybridchill:
 http://www.hybridchill.com/projects/qpscanner.html
-
 
 
 
