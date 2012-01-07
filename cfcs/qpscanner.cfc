@@ -19,6 +19,8 @@
 			<cfset This[Arg] = Arguments[Arg]/>
 		</cfloop>
 
+		<cfset This.ClientScopes = ListToArray(This.ClientScopes) />
+
 		<cfset This.Totals =
 			{ AlertCount= 0
 			, QueryCount= 0
@@ -40,7 +42,6 @@
 			, killOrderBy      = new cfregex( '(?si)\bORDER BY\b.*?$' )
 			, killBuiltIn      = new cfregex( '(?si)##(#ListChangeDelims(This.BuiltInFunctions,'|')#)\([^)]*\)##' )
 			, findScopes       = new cfregex( '(?si)(?<=##([a-z]{1,20}\()?)[^\(##<]+?(?=\.[^##<]+?##)' )
-			, findClientScopes = new cfregex( '(?i)\b(#ListChangeDelims(This.ClientScopes,'|')#)\b' )
 			, findQueryName    = new cfregex( '(?<=\bname\s{0,99}=\s{0,99})(?:"[^"]++"|''[^'']++''|[^"''\s]++)' )
 			, Newline          = new cfregex( chr(10) )
 			}/>
@@ -203,7 +204,7 @@
 
 					<cfset qryResult.ContainsClientScope[CurRow] = false/>
 					<cfif This.highlightClientScopes>
-						<cfloop index="local.CurrentScope" list="#This.ClientScopes#">
+						<cfloop index="local.CurrentScope" array="#This.ClientScopes#">
 							<cfif StructKeyExists( ScopesFound , CurrentScope )>
 								<cfset qryResult.ContainsClientScope[CurRow] = true/>
 								<cfbreak/>
