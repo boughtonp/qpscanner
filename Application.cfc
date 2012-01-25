@@ -1,13 +1,13 @@
 <cfcomponent output="false">
 
-	<cfset This.Name = "qpscanner_v0.7.5@#CGI.SERVER_NAME#"/>
+	<cfset This.Name = "qpscanner_v0.7.5-dev@#CGI.SERVER_NAME#"/>
 	<cfset This.SessionManagement = true/>
 
 
 	<cffunction name="onApplicationStart" returntype="Boolean" output="false">
 		<cfset var Result = True/>
 
-		<cfset Application.Version = "0.7.5"/>
+		<cfset Application.Version = "0.7.5-dev"/>
 
 		<cfset Application.Cfcs =
 			{ Settings = new cfcs.settings( ConfigDirectory : expandPath('./config') )

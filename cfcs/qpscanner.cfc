@@ -1,4 +1,4 @@
-<cfcomponent output="false" displayname="qpscanner v0.7.5">
+<cfcomponent output="false" displayname="qpscanner v0.7.5-dev">
 
 
 	<cffunction name="init" returntype="any" output="false" access="public">
