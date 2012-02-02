@@ -1,7 +1,7 @@
 <cfsetting showdebugoutput="true" enablecfoutputonly="true"/>
 <cfset Request.Errors = ArrayNew(1)/>
 
-<cffunction name="Variables.Struct" returntype="Struct"><cfreturn Arguments/></cffunction>
+<cffunction name="Struct" returntype="Struct"><cfreturn Arguments/></cffunction>
 
 <cfset jre = Application.Cfcs.jre/>
 
