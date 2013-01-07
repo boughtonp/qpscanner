@@ -111,7 +111,7 @@ LICENSING & VERSIONS
 GPL license (see included gpl-license.txt for details)
 
 * qpScanner v0.7.5-dev
-* cfRegex v0.1.002-qp
+* cfRegex v0.1.003-qp
 * jQuery v1.2.6
 
 Apache 2 license (see fusebox5/LICENSE.txt for details)
