@@ -7,7 +7,7 @@
 	<cffunction name="onApplicationStart" returntype="Boolean" output="false">
 		<cfset var Result = True/>
 
-		<cfset Application.Version = "RC 0.7.5"/>
+		<cfset Application.Version = "v0.7.5"/>
 
 		<cfset Application.Cfcs =
 			{ Settings = new cfcs.settings( ConfigDirectory : expandPath('./config') )
