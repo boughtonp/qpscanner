@@ -1,0 +1,33 @@
+cfRegex v0.1.002-qp
+www.cfregex.net
+
+NOTE:
+This is a partial cfRegex for use with qpScanner, and is licensed as part of qpScanner under the GPL.
+
+For the full version of cfRegex, available under the LGPL license, visit the website.
+
+
+
+DESCRIPTION
+¯¯¯¯¯¯¯¯¯¯¯
+cfRegex is a project to provide a complete set of regex functionality
+for CFML, with an aim to make regex a first-class feature which is
+easy for everyone to use.
+
+It provides a Regex object, cfregex tag, and a selection of functions,
+all designed to be used instead of the existing regex functions.
+
+
+STATUS
+¯¯¯¯¯¯
+Version: 0.1.002
+Released: 2011-07-14
+
+
+DOCUMENTATION & HELP
+¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+Please see http://www.cfregex.net for the latest documentation and for
+details on how to get help.
+
+
+/eof

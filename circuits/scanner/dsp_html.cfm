@@ -5,10 +5,9 @@
 	<form:hidden id="instance" value="#Instance#"/>
 
 	<cfoutput>
-		<p>Found #Info.Totals.AlertCount# potential risks
-			from #Info.Totals.QueryCount# queries
-			across #Info.Totals.FileCount# files
-			in approx #(Info.Totals.Time\100)/10# seconds <cfif Info.Timeout>(timed out)</cfif>.</p>
+		<p>Found #Info.Totals.AlertCount# potential risks across #Info.Totals.RiskFileCount# files,
+			out of #Info.Totals.QueryCount# total queries in #Info.Totals.FileCount# scanned files,
+			taking approx #(Info.Totals.Time\100)/10# seconds<cfif Info.Timeout> (timed out)</cfif>.</p>
 	</cfoutput>
 
 <cfif Data.RecordCount>
@@ -39,7 +38,7 @@
 							<span class="scope_info">Scopes: #XmlFormat(ScopeList)# <cfif ContainsClientScope><em>!!!CLIENT SCOPE!!!</em></cfif></span>
 						</cfif>
 					</dt>
-					<cfset QCode = jre.replace( HtmlEditFormat(QueryCode) , '(?<!\A)\n\r?' , '<br/>' , 'all' )/>
+					<cfset QCode = HtmlEditFormat(QueryCode).replaceAll( '(?<!\A)\n\r?' , '<br/>' )/>
 					<dd class="query_code" id="#QueryId#">#QCode#</dd>
 				</cfoutput>
 				</dl>

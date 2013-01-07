@@ -31,5 +31,4 @@
 </cfif>
 
 
-<cfset ScanData.StartingDir = jre.replace( ScanData.StartingDir , '\\' , '/' ,  'all' )/>
-<cfset ScanData.StartingDir = jre.replace( ScanData.StartingDir , '/+$' , '' , 'all' )/>
+<cfset ScanData.StartingDir = ScanData.StartingDir.replaceAll('\\','/').replaceAll('/+$','') />

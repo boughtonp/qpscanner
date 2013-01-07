@@ -209,14 +209,17 @@
 		<cfargument name="GroupSplitters"  default="#This.GroupSplitters#"/>
 		<cfargument name="GroupDelimiters" default="#This.GroupDelimiters#"/>
 		<cfset var Result = QueryNew("value,label,group")/>
+		<cfset var ThisGroup = "" />
+		<cfset var Row = "" />
+		<cfset var ThisRow = "" />
 		<cfif IsSimpleValue(Arguments.Options)>
-			<cfloop index="Group" list="#Arguments.Options#" delimiters="#Arguments.GroupDelimiters#">
+			<cfloop index="local.Group" list="#Arguments.Options#" delimiters="#Arguments.GroupDelimiters#">
 				<cfif ListLen(Group, Arguments.GroupSplitters) GT 1>
 					<cfset ThisGroup = ListFirst(Group, Arguments.GroupSplitters)/>
 				<cfelse>
 					<cfset ThisGroup = ""/>
 				</cfif>
-				<cfloop index="Item" list="#ListLast(Group, Arguments.GroupSplitters)#">
+				<cfloop index="local.Item" list="#ListLast(Group, Arguments.GroupSplitters)#">
 					<cfset Row = QueryAddRow(Result)/>
 					<cfset Result.Value[Row] = ListFirst(Item, Arguments.Splitters)/>
 					<cfset Result.Label[Row] = ListLast(Item,  Arguments.Splitters)/>
@@ -233,7 +236,7 @@
 				</cfif>
 			</cfloop>
 		<cfelseif IsArray(Arguments.Options)>
-			<cfloop index="i" from="1" to="#ArrayLen(Arguments.Options)#">
+			<cfloop index="local.i" from="1" to="#ArrayLen(Arguments.Options)#">
 				<cfset ThisRow = Options
 					( Arguments.Options
 					, Arguments.Fields
@@ -247,7 +250,7 @@
 				<cfset Result.Group[Row] = ThisRow.Group/>
 			</cfloop>
 		<cfelseif IsStruct(Arguments.Options)>
-			<cfloop item="Key" collection="#Arguments.Options#">
+			<cfloop item="local.Key" collection="#Arguments.Options#">
 				<cfset Row = QueryAddRow(Result)/>
 				<cfset Result.Value[Row] = Key/>
 				<cfset Result.Label[Row] = Arguments.Options[Key]/>

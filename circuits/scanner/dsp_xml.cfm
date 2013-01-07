@@ -1,9 +1,10 @@
-<cfoutput><?xml version="1.0" encoding="UTF-8"?>
+<cfcontent type="text/xml"/><cfoutput><?xml version="1.0" encoding="UTF-8"?>
 <qpscanner>
 
 	<info>
 		<count>
 			<alerts>#Info.Totals.AlertCount#</alerts>
+			<riskfiles>#Info.Totals.RiskFileCount#</riskfiles>
 			<queries>#Info.Totals.QueryCount#</queries>
 			<files>#Info.Totals.FileCount#</files>
 		</count>

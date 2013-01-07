@@ -1,4 +1,4 @@
-qpScanner v0.7.4
+qpScanner RC 0.7.5
 
 
 REQUIREMENTS
@@ -74,15 +74,12 @@ adverse affect on performance.
 KNOWN ISSUES
 ============
 
-This is a development release of QueryParam Scanner, and this list of issues
-may not be a complete one. Always ensure you have a recent backup of your code.
+At time of writing, there are no known issues with qpScanner.
 
-There is one known issue with this version of qpScanner:
+Visit the Issue Tracker for details of any that might since have been raised, 
+or to report any issues that you find:
 
-1. Incorrect Line Numbers With Identical Queries
-If you have a file with multiple identical queries (same name/attributes/SQL),
-QueryParam Scanner will report line numbers correctly for only the first of
-the queries.
+https://github.com/boughtonp/qpscanner/issues
 
 
 
@@ -94,7 +91,6 @@ http://www.hybridchill.com/projects/qpscanner.html
 
 
 
-
 CREDITS
 =======
 
@@ -102,7 +98,7 @@ QueryParam Scanner is a project created and maintained by Peter Boughton.
 
 It makes use of three other open-source projects:
 
-* Java Regex Utilities      - http://www.hybridchill.com/projects/jre-utils.html
+* cfRegex                   - http://www.cfregex.net
 * jQuery JavaScript library - http://www.jquery.com
 * Fusebox Framework         - http://www.fuseboxframework.org
 
@@ -114,8 +110,8 @@ LICENSING & VERSIONS
 
 GPL license (see included gpl-license.txt for details)
 
-* qpScanner v0.7.4
-* jre-utils v0.6.0
+* qpScanner v0.7.5
+* cfRegex v0.1.002-qp
 * jQuery v1.2.6
 
 Apache 2 license (see fusebox5/LICENSE.txt for details)

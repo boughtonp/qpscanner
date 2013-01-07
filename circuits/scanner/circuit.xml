@@ -34,7 +34,7 @@
 		<invoke
 			returnvariable = "Request.Scanner"
 			object         = "Application.Cfcs.Scanner"
-			methodcall     = "init( ArgumentCollection = ScanData , jre = Application.Cfcs.jre )"
+			methodcall     = "init( ArgumentCollection = ScanData )"
 		/>
 
 	</fuseaction>
@@ -92,6 +92,14 @@
 
 			<cf:case value="XML">
 				<include template="dsp_xml" contentvariable="Content">
+					<parameter name="Data" value="#Results.Data#"/>
+					<parameter name="Info" value="#Results.Info#"/>
+				</include>
+				<do action="layout.blank"/>
+			</cf:case>
+
+			<cf:case value="JSON">
+				<include template="dsp_json" contentvariable="Content">
 					<parameter name="Data" value="#Results.Data#"/>
 					<parameter name="Info" value="#Results.Info#"/>
 				</include>
