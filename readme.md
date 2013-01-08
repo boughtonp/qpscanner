@@ -109,7 +109,7 @@ CREDITS, VERSIONS & LICENSING
 =============================
 
 QueryParam Scanner is a project created and maintained by Peter Boughton, 
-licensed under the GPLv3 (read gpl-license.txt for details).
+licensed under the GPLv3 (read license.txt for details).
 
 The project gratefully makes use of the third-party software detailed below, 
 each available individually under their respective licenses.
