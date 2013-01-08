@@ -208,10 +208,10 @@
 				<cfset MatchInfo.Groups[CurGroup] =
 					{ Pos   = Arguments.PosOffset+Matcher.start(CurGroup)
 					, Len   = Matcher.end(CurGroup)-Matcher.start(CurGroup)
-					, Match = Matcher.group(CurGroup)
+					, Match = Matcher.group(JavaCast('int',CurGroup))
 					} />
 			<cfelse>
-				<cfset MatchInfo.Groups[CurGroup] = Matcher.group(CurGroup) />
+				<cfset MatchInfo.Groups[CurGroup] = Matcher.group(JavaCast('int',CurGroup)) />
 			</cfif>
 		</cfloop>
 
@@ -301,15 +301,6 @@
 	</cffunction>
 
 
-	<cffunction name="search"  returntype="any"     output="false" access="public" action>
-		<cfargument name="Text"       type="String"   required="true"  />
-		<cfthrow
-			message = "Not Yet implemented!"
-			type    = "cfRegex.Search.NotYetImplemented"
-		/>
-	</cffunction>
-
-
 	<cffunction name="match"   returntype="Array"   output="false" access="public" action>
 		<cfargument name="Text"         type="String"   required="true"  />
 		<cfargument name="Start"        type="Numeric"  optional  />
@@ -354,13 +345,13 @@
 				<cfcase value="groups">
 					<cfset var CurMatch = [] />
 					<cfloop index="local.CurGroup" from=1 to=#Matcher.groupCount()#>
-						<cfset CurMatch[CurGroup] = Matcher.group(CurGroup) />
+						<cfset CurMatch[CurGroup] = Matcher.group(JavaCast('int',CurGroup)) />
 					</cfloop>
 				</cfcase>
 				<cfcase value="namedgroups">
 					<cfset var CurMatch = {} />
 					<cfloop index="local.CurGroup" from=1 to=#Matcher.groupCount()#>
-						<cfset CurMatch[Arguments.GroupNames[CurGroup]] = Matcher.group(CurGroup) />
+						<cfset CurMatch[Arguments.GroupNames[CurGroup]] = Matcher.group(JavaCast('int',CurGroup)) />
 					</cfloop>
 				</cfcase>
 				<cfcase value="full">
@@ -528,10 +519,10 @@
 				<cfif isSimpleValue(Arguments.Replacement[ReplacePos])>
 					<cfset Matcher.appendReplacement( Results , Arguments.Replacement[ReplacePos] )/>
 				<cfelse>
-					<cfset local.CurrentReplaceFunc = Arguments.Replacement[ReplacePos] />
+					<cfset var CurrentReplaceFunc = Arguments.Replacement[ReplacePos] />
 <cfset Matcher.appendReplacement
 						( Results
-						, local.CurrentReplaceFunc( ArgumentCollection=buildMatchInfo(Matcher,Offset,Arguments.GroupNames) , Data = Arguments.CallbackData )
+						, CurrentReplaceFunc( ArgumentCollection=buildMatchInfo(Matcher,Offset,Arguments.GroupNames) , Data = Arguments.CallbackData )
 						)/>
 				</cfif>
 

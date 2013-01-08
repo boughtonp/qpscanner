@@ -38,7 +38,7 @@
 							<span class="scope_info">Scopes: #XmlFormat(ScopeList)# <cfif ContainsClientScope><em>!!!CLIENT SCOPE!!!</em></cfif></span>
 						</cfif>
 					</dt>
-					<cfset QCode = HtmlEditFormat(QueryCode).replaceAll( '(?<!\A)\n\r?' , '<br/>' )/>
+					<cfset QCode = HtmlEditFormat(QueryCode).replaceAll( '(?<!\A)\r?\n' , '<br/>' )/>
 					<dd class="query_code" id="#QueryId#">#QCode#</dd>
 				</cfoutput>
 				</dl>

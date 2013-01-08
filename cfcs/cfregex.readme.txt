@@ -1,4 +1,4 @@
-cfRegex v0.1.002-qp
+cfRegex v0.1.003-qp
 www.cfregex.net
 
 NOTE:
@@ -20,8 +20,8 @@ all designed to be used instead of the existing regex functions.
 
 STATUS
 ¯¯¯¯¯¯
-Version: 0.1.002
-Released: 2011-07-14
+Version: 0.1.003
+Released: 2012-05-31
 
 
 DOCUMENTATION & HELP
