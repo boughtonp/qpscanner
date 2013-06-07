@@ -1,41 +1,53 @@
-<cfimport prefix="form" taglib="../../tags/form"/>
-
 <cfoutput>
-	<form:main action="?action=scan.go" class="std typeA">
+	<form method="post" action="?action=scan.go" class="std typeA">
 
 		<h2>Quick Start</h2>
 
-		<form:group>
+		<fieldset class="main">
 
-			<form:select
-				id      = "config"
-				label   = "Select Config:"
-				options = "default,paranoid"
-				value   = "default"
-			/>
+			<div class="field">
+				<label for="config" class="indiv header">Select Config:</label>
+				<ul class="input">
+					<li>
+						<input id="config_default" checked="checked" value="default" name="config" type="radio" class="box" />
+						<label for="config_default" class="indiv">default</label>
+					</li>
+					<li>
+						<input id="config_paranoid"  value="paranoid" name="config" type="radio" class="box" />
+						<label for="config_paranoid" class="indiv">paranoid</label>
+					</li>
+				</ul>
+			</div>
 
-			<form:edit
-				id    = "StartingDir"
-				label = "Starting Directory:"
-				value = "#rc.StartingDir#"
-				hint  = "Absolute path or mapping. No ending slash required."
-			/>
+			<div class="field">
+				<label for="StartingDir" class="indiv header">Starting Directory:</label>
+				<input id="StartingDir" type="text" name="StartingDir" value="#rc.StartingDir#" class="edit" />
 
-			<form:select
-				id      = "recurse"
-				label   = "Recurse sub-directories?"
-				options = "true,false"
-				value   = "false"
-				hint    = "Set to true to scan inside sub-directories."
-			/>
+				<small class="hint" id="StartingDir_hint">Absolute path or mapping. No ending slash required.</small>
+			</div>
 
-		</form:group>
+			<div class="field">
+				<label for="recurse" class="indiv header">Recurse sub-directories?</label>
 
-		<form:controls>
+				<ul class="input">
+					<li>
+						<input id="recurse_true"  value="true" name="recurse" type="radio" class="box" />
+						<label for="recurse_true" class="indiv">true</label>
+					</li>
+					<li>
+						<input id="recurse_false" checked="checked" value="false" name="recurse" type="radio" class="box" />
+						<label for="recurse_false" class="indiv">false</label>
+					</li>
+				</ul>
 
-			<form:submit value="Scan"/>
+				<small class="hint" id="hint_recurse">Set to true to scan inside sub-directories.</small>
+			</div>
 
-		</form:controls>
+		</fieldset>
 
-	</form:main>
+		<fieldset class="controls">
+			<button type="submit">Scan</button>
+		</fieldset>
+
+	</form>
 </cfoutput>

@@ -1,24 +1,21 @@
-<cfimport prefix="form" taglib="../../tags/form"/>
+<cfset Data = rc.ScanResults.Data />
+<cfset Info = rc.ScanResults.Info />
 
-<form:main><!---action="#link(xfa.FormAction)#"--->
-
-	<form:hidden id="instance" value="#rc.Instance#"/>
-	<cfset Data = rc.ScanResults.Data />
-	<cfset Info = rc.ScanResults.Info />
-
-	<cfoutput>
-		<p>Found #Info.Totals.AlertCount# potential risks across #Info.Totals.RiskFileCount# files,
-			out of #Info.Totals.QueryCount# total queries in #Info.Totals.FileCount# scanned files,
-			taking approx #(Info.Totals.Time\100)/10# seconds<cfif Info.Timeout> (timed out)</cfif>.</p>
-	</cfoutput>
+<cfoutput>
+	<p>Found #Info.Totals.AlertCount# potential risks across #Info.Totals.RiskFileCount# files,
+		out of #Info.Totals.QueryCount# total queries in #Info.Totals.FileCount# scanned files,
+		taking approx #(Info.Totals.Time\100)/10# seconds<cfif Info.Timeout> (timed out)</cfif>.</p>
+</cfoutput>
 
 <cfif Data.RecordCount>
 	<script type="text/javascript" src="./resources/scripts/scan-results.js"></script>
 	<br/>
-	<form:controls id="DisplayOptions">Enable JavaScript to allow display options.</form:controls>
+	<fieldset class="controls" id="DisplayOptions">
+		Enable JavaScript to allow display options.
+	</fieldset>
 
 
-	<form:group id="results">
+	<fieldset class="main" id="results">
 		<dl>
 		<cfoutput query="Data" group="FileId">
 			<dt class="file">
@@ -47,16 +44,6 @@
 			</dd>
 		</cfoutput>
 		</dl>
-	</form:group>
-
-	<!--- TODO: MINOR: Implement auto-fixing... --->
-	<!---
-		<form:controls>
-			<form:submit value="Fix All"/>
-			<form:submit value="Fix Selection"/>
-		</form:controls>
-	--->
+	</fieldset>
 
 	</cfif>
-
-</form:main>

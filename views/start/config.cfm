@@ -1,12 +1,10 @@
-<cfimport prefix="form" taglib="../../tags/form"/>
-
 <cfoutput>
 
-	<form:main action="?action=scan.go" class="std typeA">
+	<form method="post" action="?action=scan.go" class="std typeA">
 
-		<form:hidden id="config" value="#rc.Config#"/>
+		<input type="hidden" name="config" value="#rc.Config#" />
 
-		<form:group>
+		<fieldset class="main">
 
 			<div class="col2 left">
 
@@ -14,49 +12,45 @@
 
 					<cfif CurrentRow-1 EQ RecordCount\2></div><div class="col2 right"></cfif>
 
-					<cfif (type NEQ 'text') >
-						<cfswitch expression="#ListFirst(type)#">
-							<cfcase value="boolean">
-								<form:select
-									id="#id#"
-									label="#label#"
-									options="true,false"
-									value="#value#"
-									hint="#hint#"
-								/>
-							</cfcase>
-							<cfcase value="select">
-								<form:select
-									id="#id#"
-									label="#label#:"
-									options="#options#"
-									value="#value#"
-									hint="#hint#"
-								/>
-							</cfcase>
-						</cfswitch>
-					<cfelse>
-						<form:edit
-							id="#id#"
-							label="#label#:"
-							value="#value#"
-							hint="#hint#"
-						/>
-					</cfif>
+					<div class="field">
+						<label class="indiv header" for="#id#">#HtmlEditFormat(label)#:</label>
+
+						<cfif type EQ 'text'>
+							<input
+								class="edit" type="text"
+								id="#id#" name="#id#"
+								value="#HtmlEditFormat(Value)#"
+							/>
+						<cfelse>
+							<cfif ListFirst(type) EQ 'boolean' >
+								<cfset rc.Setting.options[CurrentRow] = "true,false" />
+							</cfif>
+							<ul class="input">
+								<cfloop index="CurOpt" list=#options# >
+									<li>
+										<input id="#id#_#CurOpt#"  <cfif value EQ CurOpt>checked="checked"</cfif> value="#CurOpt#" name="#id#" type="radio" class="box" />
+										<label for="#id#_#CurOpt#" class="indiv">#CurOpt#</label>
+									</li>
+								</cfloop>
+							</ul>
+						</cfif>
+
+						<cfif len(trim(hint))>
+							<small class="hint">#hint#</small>
+						</cfif>
+					</div>
 
 				</cfloop>
 
 			</div>
 
-		</form:group>
+		</fieldset>
 
-		<form:controls>
+		<fieldset class="controls">
+			<button type="reset">Reset</button>
+			<button type="submit">Scan</button>
+		</fieldset>
 
-			<form:reset/>
-			<form:submit value="Scan"/>
-
-		</form:controls>
-
-	</form:main>
+	</form>
 
 </cfoutput>
