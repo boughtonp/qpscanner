@@ -11,8 +11,9 @@
 
 
 	<cffunction name="read" returntype="any" output="false" access="public">
-		<cfargument name="ConfigId" type="String"/>
-		<cfargument name="Format"   type="String" default="default" />
+		<cfargument name="ConfigId"  type="String" required />
+		<cfargument name="Format"    type="String" default="default" />
+		<cfargument name="Overrides" type="Struct" optional />
 		<cfset var Setting = QueryNew("id,label,type,options,value,hint")/>
 		<cfset var Sections = -1/>
 		<cfset var SectionList = -1/>
@@ -48,6 +49,13 @@
 					<cfloop query="Setting">
 						<cfset Result[Id] = Value />
 					</cfloop>
+
+					<cfif StructKeyExists(Arguments,'Overrides')>
+						<cfset overrideDefaults(Result,Arguments.Overrides) />
+
+						<cfset expandValues(Result) />
+					</cfif>
+
 					<cfreturn Result/>
 				</cfcase>
 				<cfdefaultcase>
@@ -63,6 +71,52 @@
 		</cfif>
 	</cffunction>
 
+
+	<cffunction name="overrideDefaults" returntype="void" output=false access="private">
+		<cfargument name="ScanSettings" type="Struct" required />
+		<cfargument name="Overrides"    type="Struct" required />
+
+		<cfloop item="local.Setting" collection="#Arguments.ScanSettings#">
+			<cfif StructKeyExists( Arguments.Overrides , Setting )>
+				<cfset Arguments.ScanSettings[Setting] = Arguments.Overrides[Setting] />
+			</cfif>
+		</cfloop>
+	</cffunction>
+
+
+	<cffunction name="expandValues" returntype="void" output=false access="private">
+		<cfargument name="ScanSettings" type="Struct" required />
+
+		<cfif StructKeyExists(Arguments.ScanSettings,'RequestTimeout')
+			AND NOT isNumeric(Arguments.ScanSettings.RequestTimeout)
+			>
+			<cfset Arguments.ScanSettings.RequestTimeout = -1/>
+		</cfif>
+
+		<cfif Arguments.ScanSettings.StartingDir EQ 'auto'>
+			<cfset Arguments.ScanSettings.StartingDir = findHomeDirectory()/>
+		</cfif>
+
+		<cfif NOT (ListFind('ColdFusion Server,BlueDragon',Server.ColdFusion.ProductName)
+			AND isAbsoluteDirectory(Arguments.ScanSettings.StartingDir)
+			)>
+			<cfset Arguments.ScanSettings.StartingDir = expandPath( Arguments.ScanSettings.StartingDir & '/' )/>
+		</cfif>
+
+		<cfset Arguments.ScanSettings.StartingDir = Arguments.ScanSettings.StartingDir.replaceAll('\\','/').replaceAll('/+$','') />
+
+	</cffunction>
+
+
+	<cffunction name="isAbsoluteDirectory" returntype="Boolean" output=false access="private">
+		<cfargument name="DirName" type="String" />
+
+		<cfif findnocase('windows',Server.OS.Name)>
+			<cfreturn refindnocase('\A[a-z]:',Arguments.DirName) />
+		<cfelse>
+			<cfreturn (left(Arguments.DirName,1) EQ '/') />
+		</cfif>
+	</cffunction>
 
 
 	<cffunction name="findHomeDirectory" returntype="String" output="false">

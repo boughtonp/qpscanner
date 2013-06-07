@@ -124,10 +124,10 @@ jQuery v1.2.6 (http://jquery.com)
 * License: GPLv2 or MIT (See http://jquery.org/license)
 * Files: resources/scripts/jquery-1.2.6.min.js
 
-Fusebox v5.5.1 (http://fusebox.org)
-* Source: https://github.com/fusebox-framework/Fusebox-ColdFusion
-* License: Apache v2.0 (http://www.apache.org/licenses/LICENSE-2.0) 
-* Files: fusebox5/*
+Framework One v2.2 (http://fw1.riaforge.org)
+* Source: http://github.com/seancorfield/fw1/
+* License: Apache v2.0 (http://www.apache.org/licenses/LICENSE-2.0)
+* Files: framework.cfc
 
 
 /eof
