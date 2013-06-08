@@ -23,7 +23,7 @@
 				<label for="StartingDir" class="indiv header">Starting Directory:</label>
 				<input id="StartingDir" type="text" name="StartingDir" value="#rc.StartingDir#" class="edit" />
 
-				<small class="hint" id="StartingDir_hint">Absolute path or mapping. No ending slash required.</small>
+				<small class="hint" id="StartingDir_hint">Absolute path or mapping.</small>
 			</div>
 
 			<div class="field">
