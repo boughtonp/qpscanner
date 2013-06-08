@@ -1,5 +1,7 @@
 <cfoutput>
-	<form method="post" action="?action=scan.go" class="std typeA">
+	<form method="post" action="?" class="std typeA">
+	
+		<input type="hidden" name="action" value="scan.go" />
 
 		<h2>Quick Start</h2>
 
