@@ -34,6 +34,8 @@ component
 		fw.setView('results.#rc.OutputFormat#');
 
 		request.layout = rc.OutputFormat EQ 'html';
+		
+		rc.Title = 'Scan Results';
 	}
 
 }

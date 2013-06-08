@@ -1,8 +1,7 @@
-<cfparam name="Title" default=""/>
 <cftry><cfcontent reset="yes"/><cfcatch></cfcatch></cftry><cfoutput><!doctype html>
 <html>
 <head>
-	<title>QueryParam Scanner<cfif Len(Title)> :: #Title#</cfif></title>
+	<title>QueryParam Scanner<cfif StructKeyExists(rc,'Title')> :: #HtmlEditFormat(rc.Title)#</cfif></title>
 
 	<link rel="stylesheet" type="text/css" href="./resources/styles/core.css"/>
 	<link rel="stylesheet" type="text/css" href="./resources/styles/form.css"/>
