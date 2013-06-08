@@ -40,6 +40,12 @@
 						<cfif len(trim(hint))>
 							<small class="hint">#hint#</small>
 						</cfif>
+						<cfif len(trim(status))>
+							<em class="experimental"
+								title="This functionality is provided for convenience but contains known bugs or limitations."
+								>EXPERIMENTAL
+							</em>
+						</cfif>
 					</div>
 
 				</cfloop>

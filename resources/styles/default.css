@@ -176,3 +176,15 @@ p
 {
 	background: #EEA0A0;
 }
+
+.experimental
+{
+	float:none;clear:both;
+	font-size: 0.7em;
+	display:inline-block;
+	padding: 0.25em 0.5em;
+	background: #F60;
+	color:white;
+	border-radius:1em;
+	cursor: help;
+}

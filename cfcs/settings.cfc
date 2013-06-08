@@ -14,7 +14,7 @@
 		<cfargument name="ConfigId"  type="String" required />
 		<cfargument name="Format"    type="String" default="default" />
 		<cfargument name="Overrides" type="Struct" optional />
-		<cfset var Setting = QueryNew("id,label,type,options,value,hint")/>
+		<cfset var Setting = QueryNew("id,label,type,options,value,hint,status")/>
 		<cfset var Sections = -1/>
 		<cfset var SectionList = -1/>
 		<cfset var CurSection = -1/>
