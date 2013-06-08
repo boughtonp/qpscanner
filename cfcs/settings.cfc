@@ -97,24 +97,33 @@
 			<cfset Arguments.ScanSettings.StartingDir = findHomeDirectory()/>
 		</cfif>
 
-		<cfset Arguments.ScanSettings.StartingDir = Arguments.ScanSettings.StartingDir.replaceAll('\\','/').replaceAll('/+$','') />
+		<cfset Arguments.ScanSettings.StartingDir = normalizePath(Arguments.ScanSettings.StartingDir) />
 
 	</cffunction>
 
 
 	<cffunction name="findHomeDirectory" returntype="String" output="false">
-		<cfset var Result = ""/>
 		<cfset var CurDir = -1/>
 		<cfset var DirList = "{home-directory},/,."/>
 
 		<cfloop index="CurDir" list="#DirList#">
 			<cfif DirectoryExists( expandPath(CurDir) )>
-				<cfset Result = expandPath( CurDir )/>
-				<cfbreak/>
+				<cfreturn normalizePath( expandPath( CurDir ) ) />
 			</cfif>
 		</cfloop>
+	</cffunction>
 
-		<cfreturn Result.replaceAll('[\\/]+','/').replaceAll('(<!(:))/$','')  />
+	
+	<cffunction name="normalizePath" returntype="String" output=false access="private">
+		<cfargument name="Path" type="String" required />
+
+		<cfset var Result = Arguments.Path.replaceAll('[\\/]+','/') />
+
+		<cfif len(Result) AND Result.endsWith('/') AND NOT Result.endsWith(':/')>
+			<cfset Result = Left(Result,len(Result)-1) />
+		</cfif>
+
+		<cfreturn Result />
 	</cffunction>
 
 
