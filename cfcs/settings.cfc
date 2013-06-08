@@ -97,25 +97,8 @@
 			<cfset Arguments.ScanSettings.StartingDir = findHomeDirectory()/>
 		</cfif>
 
-		<cfif NOT (ListFind('ColdFusion Server,BlueDragon',Server.ColdFusion.ProductName)
-			AND isAbsoluteDirectory(Arguments.ScanSettings.StartingDir)
-			)>
-			<cfset Arguments.ScanSettings.StartingDir = expandPath( Arguments.ScanSettings.StartingDir & '/' )/>
-		</cfif>
-
 		<cfset Arguments.ScanSettings.StartingDir = Arguments.ScanSettings.StartingDir.replaceAll('\\','/').replaceAll('/+$','') />
 
-	</cffunction>
-
-
-	<cffunction name="isAbsoluteDirectory" returntype="Boolean" output=false access="private">
-		<cfargument name="DirName" type="String" />
-
-		<cfif findnocase('windows',Server.OS.Name)>
-			<cfreturn refindnocase('\A[a-z]:',Arguments.DirName) />
-		<cfelse>
-			<cfreturn (left(Arguments.DirName,1) EQ '/') />
-		</cfif>
 	</cffunction>
 
 
