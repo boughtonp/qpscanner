@@ -1,7 +1,7 @@
 <cfoutput>
 
-	<form method="post" action="?" class="std typeA">
-	
+	<form method="get" action="?" class="std typeA">
+
 		<input type="hidden" name="action" value="scan.go" />
 
 		<input type="hidden" name="config" value="#rc.Config#" />
