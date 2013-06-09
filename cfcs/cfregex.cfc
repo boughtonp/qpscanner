@@ -1,9 +1,5 @@
 <cfcomponent output=false >
 
-	<!---
-		NOTE: This is a dual-purpose Object CFC and CustomTag CFC
-	--->
-
 
 	<cffunction name="init" returntype="any" output=false>
 		<cfset StructDelete(This,'init') />
@@ -18,127 +14,11 @@
 			, CANON_EQ         = 128
 			}/>
 
-		<!--- TODO: Get defaults from admin settings. --->
-		<!--- If custom tag, default COMMENTS on, otherwise no defaults. --->
-		<cfset Variables.DefaultModes = Variables.Modes['COMMENTS'] * StructKeyExists(Arguments,'HasEndTag') />
+		<cfset Variables.DefaultModes = 0 />
 
-		<!--- INFO: If FuncName is escape or quote, don't compile regex, just return object. --->
-		<cfif StructKeyExists(Arguments,'FuncName') AND ListFindNoCase('escape,quote',Arguments.FuncName)>
-			<cfif StructKeyExists(Arguments,'Text') >
-				<cfset Variables.PatternText = Arguments.Text />
-			<cfelse>
-				<cfset Variables.PatternText = Arguments.Pattern />
-			</cfif>
-			<cfif NOT StructKeyExists(Arguments,'Modes')>
-				<cfset Arguments.Modes = Variables.DefaultModes />
-			</cfif>
-			<cfset Variables.ActiveModes = parseModes(Arguments.Modes) />
-			<cfreturn This />
-		</cfif>
-
-		<!--- INFO: If not tag, pass to .compile(...) --->
-		<cfif NOT StructKeyExists(Arguments,'HasEndTag')>
-			<cfreturn This.compile(ArgumentCollection=Arguments) />
-		</cfif>
-
-		<cfif NOT Arguments.HasEndTag >
-			<cfthrow
-				message = "The cfregex tag must have a closing tag."
-				type    = "cfRegex.Tag.MissingEndTag"
-			/>
-		</cfif>
-
+		<cfreturn This.compile(ArgumentCollection=Arguments) />
 	</cffunction>
 
-
-	<!---
-		\\\ TAG FUNCS \\\
-	--->
-
-	<cffunction name="onStartTag" returntype="boolean" output=false >
-		<cfargument name="Attributes" type="Struct" required="true" />
-		<cfargument name="Caller"     type="Struct" required="true" />
-
-		<cfreturn true />
-	</cffunction>
-
-
-	<cffunction name="onEndTag" returntype="boolean" output=false >
-		<cfargument name="Attributes" type="Struct" required="true" />
-		<cfargument name="Caller"     type="Struct" required="true" />
-		<cfargument name="GeneratedContent" type="String" required="true" />
-
-		<cfif StructKeyExists(Arguments.Attributes,'Action')>
-
-			<!--- TODO: Consider Modifiers.
-			~NoCase
-			~First
-			--->
-
-			<cfif StructKeyExists(This,Arguments.Attributes.Action)
-				AND StructKeyExists(getMetaData(This[Arguments.Attributes.Action]),'Action')
-				>
-				<!--- TODO: Validate. --->
-			<cfelse>
-				<cfthrow
-					message = "Invalid Action of '#Arguments.Attributes.Action#'"
-					detail  = "Please see cfRegex documentation for valid Action values."
-					type    = "cfRegex.Tag.InvalidAction"
-				/>
-			</cfif>
-		<cfelseif StructKeyExists(Arguments.Attributes,'Text')>
-			<!--- Input Text exists - check main actions. --->
-			<cfset var CurAction = "" />
-			<cfloop index="CurAction" list="#StructKeyList(This)#">
-				<cfif ListFindNoCase('onEndTag,onStartTag',CurAction)><cfcontinue /></cfif>
-				<cfif StructKeyExists(getMetaData(This[CurAction]),'Action') AND StructKeyExists(Arguments.Attributes,CurAction)>
-					<cfset Arguments.Attributes.Action = CurAction />
-				</cfif>
-			</cfloop>
-			<cfif NOT StructKeyExists(Arguments.Attributes,'Action')>
-				<cfthrow
-					message = "No action specified, unable to detect correct action."
-					detail  = "Please see cfRegex documentation for valid Action values."
-					type    = "cfRegex.Tag.UnknownAction"
-				/>
-			</cfif>
-		<cfelseif StructKeyExists(Arguments.Attributes,'escape')>
-			<cfset Arguments.Attributes.Action = "Escape" />
-		<cfelseif StructKeyExists(Arguments.Attributes,'quote')>
-			<cfset Arguments.Attributes.Action = "Quote" />
-		<cfelse>
-			<cfset Arguments.Attributes.Action = 'Compile' />
-		</cfif>
-
-
-		<cfif NOT StructKeyExists(Arguments.Attributes,'Pattern')>
-			<cfset Arguments.Attributes.Pattern = Arguments.GeneratedContent />
-		</cfif>
-		<cfif NOT StructKeyExists(Arguments.Attributes,'Modes')>
-			<cfset Arguments.Attributes.Modes = Variables.DefaultModes />
-		</cfif>
-
-		<cfif Arguments.Attributes.Action NEQ 'Compile'>
-			<cfset compilePattern(ArgumentCollection=Arguments.Attributes) />
-		</cfif>
-
-		<cfset var Result = This[Arguments.Attributes.Action] />
-		<cfset Result = Result(ArgumentCollection=Arguments.Attributes) />
-
-		<cfif StructKeyExists(Arguments.Attributes,'Name')>
-			<cfset SetVariable("Caller.#Arguments.Attributes.Name#",Result) />
-		<cfelseif StructKeyExists(Arguments.Attributes,'Variable')>
-			<cfset SetVariable("Caller.#Arguments.Attributes.Variable#",Result) />
-		<cfelse>
-			<cfset SetVariable("Caller.cfregex",Result) />
-		</cfif>
-
-		<cfreturn false />
-	</cffunction>
-
-	<!---
-		/// TAG FUNCS ///
-	--->
 
 	<!---
 		\\\ INTERNAL \\\
@@ -241,8 +121,6 @@
 		<cfargument name="Pattern" type="String" required="true" />
 		<cfargument name="Modes"   type="String" default="#Variables.DefaultModes#" />
 		<cfset StructDelete(This,'compile') />
-		<cfset StructDelete(This,'onStartTag') />
-		<cfset StructDelete(This,'onEndTag') />
 
 		<cfset compilePattern(ArgumentCollection=Arguments) />
 
