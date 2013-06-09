@@ -22,7 +22,7 @@
 		<cfset var Result      = -1 />
 		<cfset var RootConfigFile = This.ConfigDirectory&'/../config.ini' />
 		<cfset var ThisConfigFile = lcase( REreplace( Arguments.ConfigId , '\W+' , '' , 'all' ) ) />
-		<cfset ThisConfigFile = This.ConfigDirectory & '/#Arguments.ConfigId#.ini' />
+		<cfset ThisConfigFile = This.ConfigDirectory & '/#ThisConfigFile#.ini' />
 
 		<cfif FileExists( ThisConfigFile )>
 
