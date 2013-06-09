@@ -186,6 +186,13 @@
 			<cfif qryCurData.RecordCount>
 				<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
 			</cfif>
+
+		<cfelse>
+
+			<cfthrow
+				message = "Specified path [#Arguments.DirName#] cannot be accessed or does not exist."
+				type    = "qpscanner.qpscanner.Scan.InvalidPath"
+			/>
 		</cfif>
 
 	</cffunction>
