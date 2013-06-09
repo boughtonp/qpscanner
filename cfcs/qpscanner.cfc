@@ -86,7 +86,7 @@
 					(?<=[)\s])#SegKeywords#[\s(]
 				)
 			</cfoutput></cfsavecontent>
-			<cfset Variables.Regexes.Segs = new cfregex(Variables.Regexes.Segs) />
+			<cfset Variables.Regexes.Segs = new cfregex(trim(Variables.Regexes.Segs)) />
 
 			<cfset Variables.Regexes.SegNames = new cfregex('(?<=^#SegKeywords#)') />
 		</cfif>
