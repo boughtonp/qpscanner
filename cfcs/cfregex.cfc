@@ -1,3 +1,4 @@
+<!--- cfregex v0.1.003-qp | (c) Peter Boughton | License: GPLv3 | Website: cfregex.net --->
 <cfcomponent output=false >
 
 
