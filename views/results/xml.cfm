@@ -25,6 +25,7 @@
 					<endline>#QueryEndLine#</endline></cfif>
 					<cfif Len(ScopeList)><scopes>#XmlFormat(ScopeList)#</scopes></cfif>
 					<code>#XmlFormat(QueryCode)#</code>
+					<filteredcode>#XmlFormat(FilteredCode)#</filteredcode>
 					<cfif StructKeyExists(Data,'QuerySegments')>
 						<!--- Create new var otherwise struct referencing can be confused. --->
 						<cfset var QuerySegmentsStruct = Data.QuerySegments[CurrentRow] />

@@ -33,7 +33,7 @@
 
 		<cfset This.Timeout = false/>
 
-		<cfset Variables.ResultFields = "FileId,FileName,QueryAlertCount,QueryTotalCount,QueryId,QueryName,QueryStartLine,QueryEndLine,ScopeList,ContainsClientScope,QueryCode" />
+		<cfset Variables.ResultFields = "FileId,FileName,QueryAlertCount,QueryTotalCount,QueryId,QueryName,QueryStartLine,QueryEndLine,ScopeList,ContainsClientScope,QueryCode,FilteredCode" />
 		<cfset Variables.AlertData = QueryNew(Variables.ResultFields)/>
 
 		<cfset Variables.Regexes =
@@ -225,8 +225,8 @@
 
 			<cfset var CurRow = QueryAddRow(qryResult)/>
 
-			<cfset qryResult.QueryCode[CurRow] = QueryCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ) />
-			<cfset qryResult.QueryCode[CurRow] = qryResult.QueryCode[CurRow].replaceAll( Chr(13) , Chr(10) ) />
+			<cfset qryResult.QueryCode[CurRow] = QueryCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ).replaceAll( Chr(13) , Chr(10) ) />
+			<cfset qryResult.FilteredCode[CurRow] = rekCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ).replaceAll( Chr(13) , Chr(10) ) />
 
 			<cfif This.showScopeInfo >
 				<cfset var ScopesFound = {} />
