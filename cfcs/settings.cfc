@@ -1,3 +1,4 @@
+<!--- qpscanner v0.7.3.1 | (c) Peter Boughton | License: GPLv3 | Website: sorcerersisle.com/projects:qpscanner.html --->
 <cfcomponent output="false">
 
 

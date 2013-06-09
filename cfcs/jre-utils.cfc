@@ -1,4 +1,6 @@
-<cfcomponent output="false" displayname="jre-utils v0.6">
+<!--- jre-utils v0.6 | (c) Peter Boughton | License: LGPL --->
+<!--- NOTE: This library is obsolete; use cfRegex instead: cfregex.net --->
+<cfcomponent output="false">
 
 
 	<cffunction name="init" output="false" access="public">
