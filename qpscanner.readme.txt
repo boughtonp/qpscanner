@@ -1,6 +1,8 @@
 -------------------------------------------------------------------------------
-qpScanner v0.7.3
+qpScanner v0.7.3.1
 
+NOTE: This is an old version of qpscanner, for running on CF8 and earlier.
+Newer versions of qpscanner are significantly improved and highly recommeded.
 
 
 INSTALLATION
@@ -18,9 +20,9 @@ ECLIPSE PLUGIN INSTALLATION
 
 There is an Eclipse plugin available for QueryParam Scanner.
 
-To install the plugin, please add the update site to Eclipse:
+To install the plugin, please download the JAR from:
 
-	http://eclipse.hybridchill.com/
+  http://sorcerersisle.com/projects:qpscanner.html
 
 Please consult the documentation that comes with the Plugin for further 
 details on the Plugin and how to use it.
@@ -80,8 +82,8 @@ the queries.
 SUPPORT
 =======
 
-For help or support, please see the project page at Hybridchill:
-http://www.hybridchill.com/projects/qpscanner.html
+For help or support, please see the project page for details:
+http://sorcerersisle.com/projects:qpscanner.html
 
 
 
@@ -103,7 +105,7 @@ LICENSING & VERSIONS
 ====================
 
 GPL license (see included gpl-license.txt for details)
-- qpScanner v0.7.3
+- qpScanner v0.7.3.1
 - jre-utils v0.6.0
 - jQuery v1.2.6
 
