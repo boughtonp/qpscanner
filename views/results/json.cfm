@@ -27,6 +27,9 @@
 				, "endline" : #QueryEndLine#</cfif>
 				<cfif Len(ScopeList)> , "scopes" : #serializeJson(ScopeList)#</cfif>
 				, "code" : #serializeJson(QueryCode)#
+				<cfif StructKeyExists(Data,'QuerySegments')>
+				, "segments" : #serializeJson(QuerySegments)#
+				</cfif>
 				}
 			</cfoutput>]
 		}

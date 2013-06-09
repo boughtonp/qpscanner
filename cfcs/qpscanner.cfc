@@ -15,6 +15,7 @@
 		<cfargument name="ClientScopes"          type="String"  default="form,url,client,cookie" hint="Scopes considered client scopes."/>
 		<cfargument name="NumericFunctions"      type="String"  default="val,year,month,day,hour,minute,second,asc,dayofweek,dayofyear,daysinyear,quarter,week,fix,int,round,ceiling,gettickcount,len,min,max,pi,arraylen,listlen,structcount,listvaluecount,listvaluecountnocase,rand,randrange"/>
 		<cfargument name="BuiltInFunctions"      type="String"  default="now,#Arguments.NumericFunctions#"/>
+		<cfargument name="ReturnSqlSegments"     type="Boolean" default="false" hint="Include separate SELECT/FROM/WHERE/etc in result data?" />
 
 		<cfloop item="local.Arg" collection="#Arguments#">
 			<cfset This[Arg] = Arguments[Arg]/>
@@ -46,6 +47,49 @@
 			, findQueryName    = new cfregex( '(?<=\bname\s{0,99}=\s{0,99})(?:"[^"]++"|''[^'']++''|[^"''\s]++)' )
 			, Newline          = new cfregex( chr(10) )
 			}/>
+
+		<cfif This.ReturnSqlSegments >
+			<cfset Variables.ResultFields &= ',QuerySegments' />
+			<cfset var SegKeywords = '(?i:SELECT|FROM|WHERE|GROUP BY|HAVING|ORDER BY)' />
+
+			<cfsavecontent variable="Variables.Regexes.Segs"><cfoutput>
+				(?x)
+
+				## Segment names must be preceeded by newline or paren.
+				## This helps avoid strings/variables causing confusion.
+				(?<=
+					(?:^|[()\n])
+					\s{0,99}
+				)
+				#SegKeywords#[\s(]
+
+				## This part needs to lazily consume content until it finds
+				## the next segment, whilst also making sure it's not
+				## dealing with a [bracketed] column name.
+				##
+				## For performance, splitting out whitespace and parens
+				## allows the negative charset to match possessively
+				## without breaking the overall laziness.
+				(?:
+					[^\[\s()]++
+				|
+					[\s()]+
+				|
+					\[(?!\s*#SegKeywords#\s*\])
+				)+?
+
+				## A segment must be ended by either end of string or
+				## another segment.
+				(?=
+					$
+				|
+					(?<=[)\s])#SegKeywords#[\s(]
+				)
+			</cfoutput></cfsavecontent>
+			<cfset Variables.Regexes.Segs = new cfregex(Variables.Regexes.Segs) />
+
+			<cfset Variables.Regexes.SegNames = new cfregex('(?<=^#SegKeywords#)') />
+		</cfif>
 
 		<cfset Variables.Exclusions = [] />
 		<cfloop index="local.CurrentExclusion" list="#This.Exclusions#" delimiters=";">
@@ -204,6 +248,37 @@
 				<cfset qryResult.ScopeList[CurRow] = StructKeyList(ScopesFound) />
 			</cfif>
 
+			<cfif This.ReturnSqlSegments AND findNoCase('select',ListFirst(qryResult.QueryCode[CurRow],chr(10))) >
+				<cftry>
+					<cfset var RawSegs = Regexes.Segs.match(qryResult.QueryCode[CurRow]) />
+					<cfset var SegStruct = {} />
+					<cfcatch type="java.lang.StackOverflowError">
+						<!---
+							There's a chance of failing on complex
+							queries; if so, ignore and continue scan.
+						--->
+						<cfset var RawSegs = [] />
+						<cfset var SegStruct = "failed" />
+					</cfcatch>
+				</cftry>
+
+				<cfloop index="local.CurSeg" array=#RawSegs# >
+					<cfset CurSeg = Variables.Regexes.SegNames.split(text=trim(CurSeg),limit=1) />
+					<cfset CurSeg = {Name:CurSeg[1],Code:CurSeg[2]} />
+
+					<cfif StructKeyExists(SegStruct,CurSeg.Name)>
+						<cfif isSimpleValue(SegStruct[CurSeg.Name])>
+							<cfset SegStruct[CurSeg.Name] = [ SegStruct[CurSeg.Name] ] />
+						</cfif>
+						<cfset ArrayAppend(SegStruct[CurSeg.Name],trim(CurSeg.Code)) />
+					<cfelse>
+						<cfset SegStruct[CurSeg.Name] = trim(CurSeg.Code) />
+					</cfif>
+				</cfloop>
+
+				<cfset qryResult.QuerySegments[CurRow] = SegStruct />
+			</cfif>
+
 			<cfset var BeforeQueryCode = left( FileData , CurMatch.Pos ) />
 
 			<cfset var StartLine = 1+Variables.Regexes['Newline'].matches( BeforeQueryCode , 'count' ) />
@@ -216,7 +291,6 @@
 			<cfif NOT Len( qryResult.QueryName[CurRow] )>
 				<cfset qryResult.QueryName[CurRow] = "[unknown]"/>
 			</cfif>
-
 		</cfloop>
 
 		<cfset var CurFileId = createUUID()/>

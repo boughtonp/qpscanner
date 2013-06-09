@@ -12,7 +12,7 @@
 
 				<cfloop query="rc.Setting">
 
-					<cfif CurrentRow-1 EQ RecordCount\2></div><div class="col2 right"></cfif>
+					<cfif CurrentRow-2 EQ RecordCount\2></div><div class="col2 right"></cfif>
 
 					<div class="field">
 						<label class="indiv header" for="#id#">#HtmlEditFormat(label)#:</label>
