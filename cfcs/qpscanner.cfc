@@ -287,13 +287,13 @@
 			<cfset qryResult.QueryStartLine[CurRow] = StartLine/>
 			<cfset qryResult.QueryEndLine[CurRow]   = StartLine + LineCount />
 			<cfset qryResult.QueryName[CurRow]      = ArrayToList(Variables.Regexes['findQueryName'].match(text=QueryTagCode,limit=1)) />
-			<cfset qryResult.QueryId[CurRow]        = createUuid() />
+			<cfset qryResult.QueryId[CurRow]        = hash(QueryTagCode&QueryCode,'SHA') />
 			<cfif NOT Len( qryResult.QueryName[CurRow] )>
 				<cfset qryResult.QueryName[CurRow] = "[unknown]"/>
 			</cfif>
 		</cfloop>
 
-		<cfset var CurFileId = createUUID()/>
+		<cfset var CurFileId = hash(Arguments.FileName & hash(FileData,'SHA'),'SHA') />
 		<cfloop query="qryResult">
 			<cfset qryResult.FileId[qryResult.CurrentRow]          = CurFileId />
 			<cfset qryResult.FileName[qryResult.CurrentRow]        = Arguments.FileName />
