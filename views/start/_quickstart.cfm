@@ -1,4 +1,5 @@
 <cfoutput>
+
 	<form method="get" action="?" class="std typeA">
 
 		<input type="hidden" name="action" value="scan.go" />
@@ -52,4 +53,5 @@
 		</fieldset>
 
 	</form>
+
 </cfoutput>

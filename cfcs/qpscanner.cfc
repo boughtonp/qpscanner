@@ -1,23 +1,22 @@
-<cfcomponent output="false" displayname="qpscanner v0.7.5-dev">
+<cfcomponent output=false displayname="qpscanner v0.7.5-dev">
 
+	<cffunction name="init" returntype="any" output=false access="public">
+		<cfargument name="StartingDir"           type="String"  required        hint="Directory to begin scanning the contents of." />
+		<cfargument name="OutputFormat"          type="String"  default="html"  hint="Format of scan results: [html,wddx]" />
+		<cfargument name="RequestTimeout"        type="Numeric" default="-1"    hint="Override Request Timeout, -1 to ignore" />
+		<cfargument name="recurse"               type="Boolean" default=false   hint="Also scan sub-directories?" />
+		<cfargument name="Exclusions"            type="String"  default=""      hint="Exclude files & directories matching this regex." />
+		<cfargument name="scanOrderBy"           type="Boolean" default=true    hint="Include ORDER BY statements in scan results?" />
+		<cfargument name="scanQoQ"               type="Boolean" default=true    hint="Include Query of Queries in scan results?" />
+		<cfargument name="scanBuiltInFunc"       type="Boolean" default=true    hint="Include Built-in Functions in scan results?" />
+		<cfargument name="showScopeInfo"         type="Boolean" default=true    hint="Show scope information in scan results?" />
+		<cfargument name="highlightClientScopes" type="Boolean" default=true    hint="Highlight scopes with greater risk?" />
+		<cfargument name="ClientScopes"          type="String"  default="form,url,client,cookie" hint="Scopes considered client scopes." />
+		<cfargument name="NumericFunctions"      type="String"  default="val,year,month,day,hour,minute,second,asc,dayofweek,dayofyear,daysinyear,quarter,week,fix,int,round,ceiling,gettickcount,len,min,max,pi,arraylen,listlen,structcount,listvaluecount,listvaluecountnocase,rand,randrange" />
+		<cfargument name="BuiltInFunctions"      type="String"  default="now,#Arguments.NumericFunctions#" />
+		<cfargument name="ReturnSqlSegments"     type="Boolean" default=false   hint="Include separate SELECT/FROM/WHERE/etc in result data?" />
 
-	<cffunction name="init" returntype="any" output="false" access="public">
-		<cfargument name="StartingDir"           type="String"  required        hint="Directory to begin scanning the contents of."/>
-		<cfargument name="OutputFormat"          type="String"  default="html"  hint="Format of scan results: [html,wddx]"/>
-		<cfargument name="RequestTimeout"        type="Numeric" default="-1"    hint="Override Request Timeout, -1 to ignore"/>
-		<cfargument name="recurse"               type="Boolean" default="false" hint="Also scan sub-directories?"/>
-		<cfargument name="Exclusions"            type="String"  default=""      hint="Exclude files & directories matching this regex."/>
-		<cfargument name="scanOrderBy"           type="Boolean" default="true"  hint="Include ORDER BY statements in scan results?"/>
-		<cfargument name="scanQoQ"               type="Boolean" default="true"  hint="Include Query of Queries in scan results?"/>
-		<cfargument name="scanBuiltInFunc"       type="Boolean" default="true"  hint="Include Built-in Functions in scan results?"/>
-		<cfargument name="showScopeInfo"         type="Boolean" default="true"  hint="Show scope information in scan results?"/>
-		<cfargument name="highlightClientScopes" type="Boolean" default="true"  hint="Highlight scopes with greater risk?"/>
-		<cfargument name="ClientScopes"          type="String"  default="form,url,client,cookie" hint="Scopes considered client scopes."/>
-		<cfargument name="NumericFunctions"      type="String"  default="val,year,month,day,hour,minute,second,asc,dayofweek,dayofyear,daysinyear,quarter,week,fix,int,round,ceiling,gettickcount,len,min,max,pi,arraylen,listlen,structcount,listvaluecount,listvaluecountnocase,rand,randrange"/>
-		<cfargument name="BuiltInFunctions"      type="String"  default="now,#Arguments.NumericFunctions#"/>
-		<cfargument name="ReturnSqlSegments"     type="Boolean" default="false" hint="Include separate SELECT/FROM/WHERE/etc in result data?" />
-
-		<cfloop item="local.Arg" collection="#Arguments#">
+		<cfloop item="local.Arg" collection=#Arguments# >
 			<cfset This[Arg] = Arguments[Arg]/>
 		</cfloop>
 
@@ -31,7 +30,7 @@
 			, Time          = 0
 			}/>
 
-		<cfset This.Timeout = false/>
+		<cfset This.Timeout = false />
 
 		<cfset Variables.ResultFields = "FileId,FileName,QueryAlertCount,QueryTotalCount,QueryId,QueryName,QueryStartLine,QueryEndLine,ScopeList,ContainsClientScope,QueryCode,FilteredCode" />
 		<cfset Variables.AlertData = QueryNew(Variables.ResultFields)/>
@@ -92,7 +91,7 @@
 		</cfif>
 
 		<cfset Variables.Exclusions = [] />
-		<cfloop index="local.CurrentExclusion" list="#This.Exclusions#" delimiters=";">
+		<cfloop index="local.CurrentExclusion" list=#This.Exclusions# delimiters=";" >
 			<cfset ArrayAppend( Variables.Exclusions , new cfregex(CurrentExclusion) ) />
 		</cfloop>
 
@@ -100,12 +99,11 @@
 	</cffunction>
 
 
-
-	<cffunction name="go" returntype="any" output="false" access="public">
+	<cffunction name="go" returntype="Struct" output=false access="public">
 		<cfset var StartTime = getTickCount()/>
 
 		<cfif This.RequestTimeout GT 0>
-			<cfsetting requesttimeout="#This.RequestTimeout#"/>
+			<cfsetting requesttimeout=#This.RequestTimeout# />
 		</cfif>
 
 		<cftry>
@@ -115,7 +113,7 @@
 			<!--- If timeout occurs, ignore error and proceed. --->
 			<cfcatch>
 				<cfif find('timeout',cfcatch.message)>
-					<cfset This.Timeout = True/>
+					<cfset This.Timeout = true />
 				<cfelse>
 					<cfrethrow/>
 				</cfif>
@@ -134,25 +132,24 @@
 	</cffunction>
 
 
-
-	<cffunction name="scan" returntype="void" output="false" access="public">
+	<cffunction name="scan" returntype="void" output=false access="private">
 		<cfargument name="DirName" type="string" required />
 
 		<cfif DirectoryExists(Arguments.DirName)>
 
 			<cfdirectory
-				name="local.qryDir"
-				directory="#Arguments.DirName#"
-				sort="type ASC,name ASC"
+				name      = "local.qryDir"
+				directory = #Arguments.DirName#
+				sort      = "type ASC,name ASC"
 			/>
 
 			<cfloop query="qryDir">
 				<cfset var CurrentTarget = Arguments.DirName & '/' & Name />
 
-				<cfset var process = true/>
-				<cfloop index="local.CurrentExclusion" array=#Variables.Exclusions#>
+				<cfset var process = true />
+				<cfloop index="local.CurrentExclusion" array=#Variables.Exclusions# >
 					<cfif CurrentExclusion.matches( CurrentTarget )>
-						<cfset process = false/>
+						<cfset process = false />
 						<cfbreak />
 					</cfif>
 				</cfloop>
@@ -193,22 +190,21 @@
 	</cffunction>
 
 
+	<cffunction name="hunt" returntype="Query" output=false access="private">
+		<cfargument name="FileName" type="String" required />
+		<cfset var qryResult = QueryNew(Variables.ResultFields) />
 
-	<cffunction name="hunt" returntype="Query" output="false">
-		<cfargument name="FileName"    type="String" required />
-		<cfset var qryResult = QueryNew(Variables.ResultFields)/>
+		<cfset local.FileData = FileRead(Arguments.FileName) />
 
-		<cffile action="read" file="#Arguments.FileName#" variable="local.FileData"/>
+		<cfset var Matches = Variables.Regexes['findQueries'].find( text=FileData , returntype='info' ) />
 
-		<cfset var Matches = Variables.Regexes['findQueries'].find( text=FileData , returntype='info' )/>
-
-		<cfloop index="CurMatch" array="#Matches#">
+		<cfloop index="CurMatch" array=#Matches# >
 
 			<cfset var QueryTagCode = ListFirst( CurMatch.Match , '>' ) />
 			<cfset var QueryCode    = ListRest( CurMatch.Match , '>' ) />
 
 			<cfset var rekCode = Variables.Regexes['killParams'].replace( QueryCode , '' )/>
-			<cfset rekCode = Variables.Regexes['killCfTag'].replace( rekCode , '' )/>
+			<cfset rekCode     = Variables.Regexes['killCfTag'].replace( rekCode , '' )/>
 
 			<cfif NOT This.scanOrderBy>
 				<cfset rekCode = Variables.Regexes['killOrderBy'].replace( rekCode , '' )/>
@@ -225,21 +221,21 @@
 
 			<cfset var CurRow = QueryAddRow(qryResult)/>
 
-			<cfset qryResult.QueryCode[CurRow] = QueryCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ).replaceAll( Chr(13) , Chr(10) ) />
+			<cfset qryResult.QueryCode[CurRow]    = QueryCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ).replaceAll( Chr(13) , Chr(10) ) />
 			<cfset qryResult.FilteredCode[CurRow] = rekCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ).replaceAll( Chr(13) , Chr(10) ) />
 
 			<cfif This.showScopeInfo >
 				<cfset var ScopesFound = {} />
 
-				<cfloop index="local.CurScope" array="#Variables.Regexes['findScopes'].match( rekCode )#">
+				<cfloop index="local.CurScope" array=#Variables.Regexes['findScopes'].match( rekCode )# >
 					<cfset ScopesFound[CurScope] = true />
 				</cfloop>
 
-				<cfset qryResult.ContainsClientScope[CurRow] = false/>
+				<cfset qryResult.ContainsClientScope[CurRow] = false />
 				<cfif This.highlightClientScopes>
-					<cfloop index="local.CurrentScope" array="#This.ClientScopes#">
+					<cfloop index="local.CurrentScope" array=#This.ClientScopes# >
 						<cfif StructKeyExists( ScopesFound , CurrentScope )>
-							<cfset qryResult.ContainsClientScope[CurRow] = true/>
+							<cfset qryResult.ContainsClientScope[CurRow] = true />
 							<cfbreak/>
 						</cfif>
 					</cfloop>
@@ -252,6 +248,7 @@
 				<cftry>
 					<cfset var RawSegs = Regexes.Segs.match(qryResult.QueryCode[CurRow]) />
 					<cfset var SegStruct = {} />
+
 					<cfcatch type="java.lang.StackOverflowError">
 						<!---
 							There's a chance of failing on complex
@@ -263,7 +260,7 @@
 				</cftry>
 
 				<cfloop index="local.CurSeg" array=#RawSegs# >
-					<cfset CurSeg = Variables.Regexes.SegNames.split(text=trim(CurSeg),limit=1) />
+					<cfset CurSeg = Variables.Regexes.SegNames.split( text=trim(CurSeg) , limit=1 ) />
 					<cfset CurSeg = {Name:CurSeg[1],Code:CurSeg[2]} />
 
 					<cfif StructKeyExists(SegStruct,CurSeg.Name)>
@@ -293,7 +290,7 @@
 			</cfif>
 		</cfloop>
 
-		<cfset var CurFileId = hash(Arguments.FileName & hash(FileData,'SHA'),'SHA') />
+		<cfset var CurFileId = hash( Arguments.FileName & hash(FileData,'SHA') , 'SHA' ) />
 		<cfloop query="qryResult">
 			<cfset qryResult.FileId[qryResult.CurrentRow]          = CurFileId />
 			<cfset qryResult.FileName[qryResult.CurrentRow]        = Arguments.FileName />
@@ -311,8 +308,7 @@
 	</cffunction>
 
 
-
-	<cffunction name="QueryAppend" returntype="Query" output="false" access="private">
+	<cffunction name="QueryAppend" returntype="Query" output=false access="private">
 		<cfargument name="QueryOne" type="Query" required />
 		<cfargument name="QueryTwo" type="Query" required />
 		<!--- Bug fix for CF9 --->
@@ -323,7 +319,7 @@
 			SELECT * FROM Arguments.QueryOne
 			UNION SELECT * FROM Arguments.QueryTwo
 		</cfquery>
-		<cfreturn Result/>
+		<cfreturn Result />
 	</cffunction>
 
 

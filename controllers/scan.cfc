@@ -1,7 +1,7 @@
 component
 {
-
 	function init(fw){variables.fw=arguments.fw;}
+
 
 	function go(rc)
 	{
@@ -20,7 +20,6 @@ component
 			, Overrides : rc
 			);
 
-
 		Request.Scanner = Application.Cfcs.Scanner.init( ArgumentCollection = rc.ScanData );
 
 		rc.ScanResults = Request.Scanner.go();
@@ -37,5 +36,6 @@ component
 
 		rc.Title = 'Scan Results';
 	}
+
 
 }

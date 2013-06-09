@@ -1,6 +1,7 @@
 component
 {
 
+
 	function intro(rc)
 	{
 		rc.Title = 'Start';
@@ -8,6 +9,7 @@ component
 		if ( NOT StructKeyExists(rc,'StartingDir') )
 			rc.StartingDir = Application.Cfcs.Settings.findHomeDirectory();
 	}
+
 
 	function config(rc)
 	{
@@ -18,5 +20,6 @@ component
 
 		rc.Setting = Application.Cfcs.Settings.read( ConfigId:rc.Config , Format:'query' );
 	}
+
 
 }
