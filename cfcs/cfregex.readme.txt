@@ -1,5 +1,5 @@
 cfRegex v0.1.003-qp
-www.cfregex.net
+cfregex.net
 
 NOTE:
 This is a partial cfRegex for use with qpScanner, and is licensed as part of qpScanner under the GPL.
@@ -26,7 +26,7 @@ Released: 2012-05-31
 
 DOCUMENTATION & HELP
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-Please see http://www.cfregex.net for the latest documentation and for
+Please see http://docs.cfregex.net for the latest documentation and for
 details on how to get help.
 
 
