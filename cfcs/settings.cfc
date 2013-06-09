@@ -113,7 +113,7 @@
 		</cfloop>
 	</cffunction>
 
-	
+
 	<cffunction name="normalizePath" returntype="String" output=false access="private">
 		<cfargument name="Path" type="String" required />
 
