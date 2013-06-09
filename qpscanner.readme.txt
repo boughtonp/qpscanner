@@ -1,5 +1,5 @@
 -------------------------------------------------------------------------------
-qpScanner v0.7.3.1
+qpScanner v0.7.3.2
 
 NOTE: This is an old version of qpscanner, for running on CF8 and earlier.
 Newer versions of qpscanner are significantly improved and highly recommeded.
@@ -105,7 +105,7 @@ LICENSING & VERSIONS
 ====================
 
 GPL license (see included gpl-license.txt for details)
-- qpScanner v0.7.3.1
+- qpScanner v0.7.3.2
 - jre-utils v0.6.0
 - jQuery v1.2.6
 

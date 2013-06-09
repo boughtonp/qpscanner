@@ -1,4 +1,4 @@
-<!--- qpscanner v0.7.3.1 | (c) Peter Boughton | License: GPLv3 | Website: sorcerersisle.com/projects:qpscanner.html --->
+<!--- qpscanner v0.7.3.2 | (c) Peter Boughton | License: GPLv3 | Website: sorcerersisle.com/projects:qpscanner.html --->
 <cfcomponent output="false">
 
 	<cffunction name="Struct" returntype="Struct" access="private"><cfreturn Arguments/></cffunction>
