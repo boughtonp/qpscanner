@@ -59,29 +59,22 @@ For more details on this plugin, check the info provided at:
 USAGE
 =====
 
-Upon accessing qpScanner you will see a Quick Start form:
+Upon accessing qpScanner you will see a simple form:
 
-	Select Config
-		This allows you to choose between "default" or "paranoid" configs.
-		The default config should be fine for most people.
-
-	Starting Directory
-		Where you put the location of the project(s) you wish to scan.
+	Directory
+		The location of the code you wish to scan.
 		This can be either an absolute path or a mapping.
 
-	Recursive
-		Indicates if you want qpScanner to look inside directories, or remain
-		at the current directory level.
+	Recurse?
+		Select yes if you want qpScanner to look inside sub-directories, 
+		or no to only scan the files directly in the specified directory.
 
 
 Once these are set as appropriate, press Scan and qpScanner will get to work.
 
-As it finds queries with CF variables (ie: `#values_in_hashes#`) that are not
-inside a cfqueryparam tag, it will list that file. The positions of the queries 
-are displayed when clicking on a file, and clicking on each of those reveals the 
-actual contents of the query.
-
-When complete, it will list how many were found out of how many total queries.
+It will look for queries with CF variables (ie: `#values_in_hashes#`) that are 
+not inside a cfqueryparam tag, and  - once complete - will list how many were 
+found out of how many total queries, and provide a list of files and queries.
 
 
 NOTE: QueryParam Scanner should be used *only* in your development environment,
