@@ -1,16 +1,19 @@
 <cfoutput>
 
-	<div class="col2 right">
-		<h1><img src="./resources/images/main_logo.png" alt="QueryParam Scanner" style="width: 500px; height: 300px;"/></h1>
-	</div>
-	<div class="col2 left">
-		#view('start/_welcome')#
-	</div>
-	<div class="col2 left">
-		#view('start/_quickstart')#
-	</div>
-	<div class="col2 right about">
+	<div class="about">
+		<img src="./resources/images/logo.jpg" alt="QueryParam Scanner" />
 		#view('start/_about')#
 	</div>
+
+	<div class="start">
+		<p>To use default options, simply enter the directory below and hit scan.</p>
+
+		<p>Alternatively, visit the <a href="?action=start.config">Configuration</a>
+		page for more options.</p>
+
+		#view('start/_quickstart')#
+	</div>
+
+	<br class="break" />
 
 </cfoutput>

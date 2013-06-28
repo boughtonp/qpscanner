@@ -7,6 +7,8 @@ function init()
 	$j('dt.file').click( toggleFileInfo );
 	$j('dt.query').click( toggleQueryCode );
 
+	$j('dt.file .id,dt.query .id').click( function(){return false;} );
+
 	highlightClientScopeFiles();
 
 	renderDisplayOptions();
@@ -53,10 +55,10 @@ function renderDisplayOptions()
 {
 	$j('#DisplayOptions')
 		.html('')
-		.append('<button type="button">toggle all files</button>')
-		.append('<button type="button">toggle all queries</button>')
+		.append('<input type="checkbox" checked id="toggle_files" /><label class="indiv" for="toggle_files">toggle file contents</label>')
+		.append('<input type="checkbox" checked id="toggle_queries" /><label class="indiv" for="toggle_queries">toggle query contents</label>')
 		;
 
-	$j('#DisplayOptions button:contains(toggle all files)').click( toggleAllFileInfo );
-	$j('#DisplayOptions button:contains(toggle all queries)').click( toggleAllQueryCode );
+	$j('#DisplayOptions #toggle_files').click( toggleAllFileInfo );
+	$j('#DisplayOptions #toggle_queries').click( toggleAllQueryCode );
 }

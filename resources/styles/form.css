@@ -1,136 +1,192 @@
-form.std input,
-form.std select,
-form.std button
+input,
+select,
+button
 {border-width: 1px;}
 
 
-form.std fieldset
+fieldset
 {
 	border: none 0px;
 	float: none; clear: both;
 }
 
 
-form.std .field
+#intro .field
 {
-	width: 96%;
+	width: 98%;
+	float:none;
+	clear:both;
+}
+
+.field
+{
+	width: 48%;
 	margin: 0.75em 1%;
-	float: left; clear: both;
-	border: solid 1px #B1911C;
-	background: #FEFEF2;
+	float: left; clear: none;
 	padding: 1em 1%;
+	height: 80px;
+}
+
+.field.ProfileName
+{
+	display:none;
 }
 
 
-form.std .field label.header
+.field label.header
 {
-	display: block;
+	display: inline-block;
 	float: left; clear: left;
 	font-weight: normal;
-	width: 40%;
+	min-width: 36%;
 }
 
-form.std.typeA .field label.header
+.field label.header
 {
 	text-align: left;
 }
 
-form.std.typeB .field label.header
-{
-	text-align: right;
-}
 
-form.std.typeC .field label.header
-{
-	float: left; clear: both;
-	width: 80%;
-}
-
-
-form.std .field input.edit,
-form.std .field select,
-form.std .field textarea
+.field input.edit,
+.field select,
+.field textarea
 {
 	display: block;
 	float: left;
 	clear: none;
-	width: 58%;
+	width: 50%;
 	padding: 0.25em;
-	border: dotted 1px #8090A0;
-	background: #F8F8F8;
+	// border: dotted 1px #8090A0;
+	border: dotted 1px rgba(51,255,204,0.5);
+	background: black;
+	color: #F8F8F8;
 }
 
-form.std.typeC .field input.edit,
-form.std.typeC .field select,
-form.std.typeC .field textarea
+.field input.edit:hover,
+.field select:hover,
+.field textarea:hover
 {
-	float: left; clear: both;
-	width: 98%;
+	border: solid 1px rgba(51,255,204,0.6);
+	color: #FAFAFA;
 }
 
-form.std .field input.edit:hover,
-form.std .field select:hover,
-form.std .field textarea:hover
+.field input.edit:focus,
+.field select:focus,
+.field textarea:focus
 {
-	border: solid 1px #8090A0;
-	background: #FAFAFA;
-}
-
-form.std .field input.edit:focus,
-form.std .field select:focus,
-form.std .field textarea:focus
-{
-	border: solid 1px #8090A0;
-	background: #FFFFFF;
+	border: solid 1px rgba(51,255,204,0.75);
+	background: black;
+	color:white;
 }
 
 
-
-form.std .field .hint
+label.indiv:not(.header)
 {
-	display: block;
+	cursor:pointer;
+}
+
+
+
+
+.field .hint
+{
+	display: inline-block;
 	float: left; clear: none;
-	width: 80%;
+	max-width: 75%;
 	
 	color: #8090A0;
 	margin-top: 0.75em;
 }
 
-form.std em.accesskey
+em.accesskey
 {
 	font-style: normal;
 }
 
 
 
-form.std .controls
+.controls
 {
-	width: 96%;
+	width: 100%;
 	margin: 1em 1%;
 	padding: 0.5em 1%;
 	text-align: center;
 	
-	border-top: solid 1px #EEEEEE;
+	xborder-top: solid 1px #EEEEEE;
 }
 
-#intro form.std .controls
+#intro .controls
 {
 	margin-top: 0.5em;
 	padding: 0 1%;
 	border-top: none;
 }
 
-form.std .controls button
+.controls button
 {
+	font-weight: bold;
 	margin: 0.25em 0.5em;
+}
+
+label.indiv:not(.header)
+{
+	margin: 0.25em 0.25em;
+}
+
+.controls button,
+label.indiv:not(.header)
+{
 	padding: 0.25em 0.5em;
 	font-size: 1em;
+	
+	border: solid 2px rgba(51,255,204,0.4);
+	background: rgba(0,0,0,0.1);
+	color: rgba(51,255,204,0.8);
+	border-radius: 1em;
+}
+
+input[type="radio"],
+input[type="checkbox"]
+{
+	display:none;
+}
+
+input[type="radio"]:not(:checked) + label.indiv:not(.header),
+input[type="checkbox"]:not(:checked) + label.indiv:not(.header)
+{
+	border: solid 2px rgba(51,255,204,0.4);
+}
+
+input[type="radio"]:checked + label.indiv:not(.header),
+input[type="checkbox"]:checked + label.indiv:not(.header)
+{
+	border: solid 2px rgba(51,255,204,0.8);
+	color: rgba(51,255,204,1);
+	box-shadow: 0 0 0.75em rgba(255,255,255,0.2);
+}
+
+.controls button:hover,
+label.indiv:not(.header):hover,
+input[type="radio"]:checked + label.indiv:not(.header):hover,
+input[type="checkbox"]:checked + label.indiv:not(.header):hover
+{
+	border-color: rgba(170,255,102,0.7);
+	background: rgba(40,40,40,0.5);
+	color: rgba(170,255,102,1);
+	box-shadow: 0 0 1em rgba(255,255,255,0.2);
+}
+
+.controls button:active,
+label.indiv:not(.header):active
+{
+	color: rgba(213,255,179,1);
+	box-shadow: 0 0 1em rgba(255,255,255,1);
 }
 
 
 
-form.std .field ul.input li
+.field ul.input li
 {
 	display: inline;
-	margin: auto 1em;
+	margin: 0;
 }

@@ -1,4 +1,4 @@
-<cftry><cfcontent reset="yes"/><cfcatch></cfcatch></cftry><cfoutput><!doctype html>
+<cfcontent reset type="text/html" /><cfoutput><!doctype html>
 <html>
 <head>
 	<title>QueryParam Scanner<cfif StructKeyExists(rc,'Title')> :: #HtmlEditFormat(rc.Title)#</cfif></title>

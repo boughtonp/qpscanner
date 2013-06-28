@@ -26,6 +26,7 @@
 				<span class="summary">
 					- <strong class="alert">#QueryAlertCount#</strong> queries to check:
 				</span>
+				<small class="id">#FileId#</small>
 			</dt>
 			<dd class="file_info" id="#FileId#_queries">
 				<dl>
@@ -36,6 +37,7 @@
 						<cfif Len(ScopeList)>
 							<span class="scope_info">Scopes: #XmlFormat(ScopeList)# <cfif ContainsClientScope><em>!!!CLIENT SCOPE!!!</em></cfif></span>
 						</cfif>
+						<small class="id">#QueryId#</small>
 					</dt>
 					<cfset QCode = HtmlEditFormat(QueryCode).replaceAll( '(?<!\A)\r?\n' , '<br/>' )/>
 					<dd class="query_code" id="#QueryId#">#QCode#</dd>

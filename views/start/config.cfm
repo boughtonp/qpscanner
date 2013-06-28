@@ -1,6 +1,6 @@
 <cfoutput>
 
-	<form method="get" action="?" class="std typeA">
+	<form method="get" action="?" >
 
 		<input type="hidden" name="action" value="scan.go" />
 
@@ -8,49 +8,43 @@
 
 		<fieldset class="main">
 
-			<div class="col2 left">
+			<cfloop query="rc.Setting">
 
-				<cfloop query="rc.Setting">
+				<div class="field #id#">
+					<label class="indiv header" for="#id#">#HtmlEditFormat(label)#:</label>
 
-					<cfif CurrentRow-2 EQ RecordCount\2></div><div class="col2 right"></cfif>
-
-					<div class="field">
-						<label class="indiv header" for="#id#">#HtmlEditFormat(label)#:</label>
-
-						<cfif type EQ 'text'>
-							<input
-								class="edit" type="text"
-								id="#id#" name="#id#"
-								value="#HtmlEditFormat(Value)#"
-							/>
-						<cfelse>
-							<cfif ListFirst(type) EQ 'boolean' >
-								<cfset rc.Setting.options[CurrentRow] = "true,false" />
-							</cfif>
-							<ul class="input">
-								<cfloop index="CurOpt" list=#options# >
-									<li>
-										<input id="#id#_#CurOpt#"  <cfif value EQ CurOpt>checked="checked"</cfif> value="#CurOpt#" name="#id#" type="radio" class="box" />
-										<label for="#id#_#CurOpt#" class="indiv">#CurOpt#</label>
-									</li>
-								</cfloop>
-							</ul>
+					<cfif type EQ 'text'>
+						<input
+							class="edit" type="text"
+							id="#id#" name="#id#"
+							value="#HtmlEditFormat(Value)#"
+						/>
+					<cfelse>
+						<cfif ListFirst(type) EQ 'boolean' >
+							<cfset rc.Setting.options[CurrentRow] = "yes,no" />
 						</cfif>
+						<ul class="input">
+							<cfloop index="CurOpt" list=#options# >
+								<li>
+									<input id="#id#_#CurOpt#"  <cfif value EQ CurOpt>checked="checked"</cfif> value="#CurOpt#" name="#id#" type="radio" class="box" />
+									<label for="#id#_#CurOpt#" class="indiv">#CurOpt#</label>
+								</li>
+							</cfloop>
+						</ul>
+					</cfif>
 
-						<cfif len(trim(hint))>
-							<small class="hint">#hint#</small>
-						</cfif>
-						<cfif len(trim(status))>
-							<em class="experimental"
-								title="This functionality is provided for convenience but contains known bugs or limitations."
-								>EXPERIMENTAL
-							</em>
-						</cfif>
-					</div>
+					<cfif len(trim(status))>
+						<em class="experimental"
+							title="This functionality is provided for convenience but contains known bugs or limitations."
+							>EXPERIMENTAL
+						</em>
+					</cfif>
+					<cfif len(trim(hint))>
+						<small class="hint">#hint#</small>
+					</cfif>
+				</div>
 
-				</cfloop>
-
-			</div>
+			</cfloop>
 
 		</fieldset>
 
