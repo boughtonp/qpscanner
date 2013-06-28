@@ -34,7 +34,6 @@
 		<cfset This.Timeout = false />
 
 		<cfset Variables.ResultFields = "FileId,FileName,QueryAlertCount,QueryTotalCount,QueryId,QueryName,QueryStartLine,QueryEndLine,ScopeList,ContainsClientScope,QueryCode,FilteredCode" />
-		<cfset Variables.AlertData = QueryNew(Variables.ResultFields)/>
 
 		<cfset Variables.Regexes =
 			{ findQueries      = new cfregex( '(?si)(?:<cfquery\b)(?:[^<]++|<(?!/cfquery>))+(?=</cfquery>)' )
@@ -90,6 +89,8 @@
 
 			<cfset Variables.Regexes.SegNames = new cfregex('(?<=^#SegKeywords#)') />
 		</cfif>
+
+		<cfset Variables.AlertData = QueryNew(Variables.ResultFields)/>
 
 		<cfset Variables.Exclusions = [] />
 		<cfloop index="local.CurrentExclusion" list=#This.Exclusions# delimiters=";" >
@@ -324,12 +325,11 @@
 
 		<cfset QueryAddRow( QueryOne , QueryTwo.RecordCount )/>
 
-		<cfloop index="local.CurCol" list=#QueryOne.ColumnList# >
+		<cfloop index="local.CurCol" list=#Variables.ResultFields# >
 			<cfloop query="QueryTwo">
 				<cfset QueryOne[CurCol][OrigRow+CurrentRow] = QueryTwo[CurCol][CurrentRow] />
 			</cfloop>
 		</cfloop>
-
 	</cffunction>
 
 
