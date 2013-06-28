@@ -28,12 +28,12 @@
 					<filteredcode>#XmlFormat(FilteredCode)#</filteredcode>
 					<cfif StructKeyExists(Data,'QuerySegments')>
 						<!--- Create new var otherwise struct referencing can be confused. --->
-						<cfset var QuerySegmentsStruct = Data.QuerySegments[CurrentRow] />
+						<cfset local.QuerySegmentsStruct = Data.QuerySegments[CurrentRow] />
 						<segments><cfif isStruct(QuerySegmentsStruct)>
 							<cfloop item="CurSeg" collection=#QuerySegmentsStruct#
 								><cfif isArray(QuerySegmentsStruct[CurSeg])
 									><cfloop index="CurSegItem" array=#QuerySegmentsStruct[CurSeg]#
-									><segment type="#CurSeg#">#XmlFormat(#CurSegItem#)#</segment></cfloop>
+									><segment type="#CurSeg#">#XmlFormat(CurSegItem)#</segment></cfloop>
 								<cfelse
 									><segment type="#CurSeg#">#XmlFormat(QuerySegmentsStruct[CurSeg])#</segment></cfif>
 							</cfloop>
