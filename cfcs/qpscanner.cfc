@@ -169,7 +169,7 @@
 						<cfset var qryCurData = hunt( CurrentTarget )/>
 
 						<cfif qryCurData.RecordCount>
-							<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
+							<cfset QueryAppend( Variables.AlertData , qryCurData )/>
 						</cfif>
 
 					</cfif>
@@ -184,7 +184,7 @@
 			<cfset var qryCurData = hunt( This.StartingDir )/>
 
 			<cfif qryCurData.RecordCount>
-				<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
+				<cfset QueryAppend( Variables.AlertData , qryCurData )/>
 			</cfif>
 
 		<cfelse>
@@ -316,18 +316,20 @@
 	</cffunction>
 
 
-	<cffunction name="QueryAppend" returntype="Query" output=false access="private">
+	<cffunction name="QueryAppend" returntype="void" output=false access="private">
 		<cfargument name="QueryOne" type="Query" required />
 		<cfargument name="QueryTwo" type="Query" required />
-		<!--- Bug fix for CF9 --->
-		<cfif NOT Arguments.QueryOne.RecordCount><cfreturn Arguments.QueryTwo /></cfif>
-		<cfif NOT Arguments.QueryTwo.RecordCount><cfreturn Arguments.QueryOne /></cfif>
-		<!--- / --->
-		<cfquery name="local.Result" dbtype="Query">
-			SELECT * FROM Arguments.QueryOne
-			UNION SELECT * FROM Arguments.QueryTwo
-		</cfquery>
-		<cfreturn Result />
+
+		<cfset var OrigRow = QueryOne.RecordCount />
+
+		<cfset QueryAddRow( QueryOne , QueryTwo.RecordCount )/>
+
+		<cfloop index="local.CurCol" list=#QueryOne.ColumnList# >
+			<cfloop query="QueryTwo">
+				<cfset QueryOne[CurCol][OrigRow+CurrentRow] = QueryTwo[CurCol][CurrentRow] />
+			</cfloop>
+		</cfloop>
+
 	</cffunction>
 
 
