@@ -269,7 +269,7 @@
 
 				<cfloop index="local.CurSeg" array=#RawSegs# >
 					<cfset CurSeg = Variables.Regexes.SegNames.split( text=trim(CurSeg) , limit=1 ) />
-					<cfset CurSeg = {Name:CurSeg[1],Code:CurSeg[2]} />
+					<cfset CurSeg = {Name=CurSeg[1],Code=CurSeg[2]} />
 
 					<cfif StructKeyExists(SegStruct,CurSeg.Name)>
 						<cfif isSimpleValue(SegStruct[CurSeg.Name])>

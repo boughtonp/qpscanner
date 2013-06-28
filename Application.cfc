@@ -5,9 +5,9 @@
 	<cfset This.SessionManagement = true/>
 
 	<cfset Variables.Framework =
-		{ DefaultSection   : 'start'
-		, DefaultItem      : 'intro'
-		, ReloadApplicationOnEveryRequest : true
+		{ DefaultSection   = 'start'
+		, DefaultItem      = 'intro'
+		, ReloadApplicationOnEveryRequest = true
 		}/>
 
 	<cffunction name="setupApplication" output="false">
