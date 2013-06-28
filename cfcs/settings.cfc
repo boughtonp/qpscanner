@@ -11,7 +11,7 @@
 
 
 	<cffunction name="read" returntype="any" output=false access="public">
-		<cfargument name="ConfigId"  type="String" required />
+		<cfargument name="ConfigId"  type="String" required_ />
 		<cfargument name="Format"    type="String" default="default" />
 		<cfargument name="Overrides" type="Struct" optional />
 		<cfset var Setting = QueryNew("id,label,type,options,value,hint,status") />
@@ -72,8 +72,8 @@
 
 
 	<cffunction name="overrideDefaults" returntype="void" output=false access="private">
-		<cfargument name="ScanSettings" type="Struct" required />
-		<cfargument name="Overrides"    type="Struct" required />
+		<cfargument name="ScanSettings" type="Struct" required_ />
+		<cfargument name="Overrides"    type="Struct" required_ />
 
 		<cfloop item="local.Setting" collection=#Arguments.ScanSettings# >
 			<cfif StructKeyExists( Arguments.Overrides , Setting )>
@@ -84,7 +84,7 @@
 
 
 	<cffunction name="expandValues" returntype="void" output=false access="private">
-		<cfargument name="ScanSettings" type="Struct" required />
+		<cfargument name="ScanSettings" type="Struct" required_ />
 
 		<cfif StructKeyExists(Arguments.ScanSettings,'RequestTimeout')
 			AND NOT isNumeric(Arguments.ScanSettings.RequestTimeout)
@@ -114,7 +114,7 @@
 
 
 	<cffunction name="normalizePath" returntype="String" output=false access="private">
-		<cfargument name="Path" type="String" required />
+		<cfargument name="Path" type="String" required_ />
 
 		<cfset var Result = Arguments.Path.replaceAll('[\\/]+','/') />
 

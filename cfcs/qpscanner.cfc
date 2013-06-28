@@ -2,7 +2,7 @@
 <cfcomponent output=false>
 
 	<cffunction name="init" returntype="any" output=false access="public">
-		<cfargument name="StartingDir"           type="String"  required        hint="Directory to begin scanning the contents of." />
+		<cfargument name="StartingDir"           type="String"  required_       hint="Directory to begin scanning the contents of." />
 		<cfargument name="OutputFormat"          type="String"  default="html"  hint="Format of scan results: [html,wddx]" />
 		<cfargument name="RequestTimeout"        type="Numeric" default="-1"    hint="Override Request Timeout, -1 to ignore" />
 		<cfargument name="recurse"               type="Boolean" default=false   hint="Also scan sub-directories?" />
@@ -135,7 +135,7 @@
 
 
 	<cffunction name="scan" returntype="void" output=false access="private">
-		<cfargument name="DirName" type="string" required />
+		<cfargument name="DirName" type="string" required_ />
 
 		<cfif DirectoryExists(Arguments.DirName)>
 
@@ -200,7 +200,7 @@
 
 
 	<cffunction name="hunt" returntype="Query" output=false access="private">
-		<cfargument name="FileName" type="String" required />
+		<cfargument name="FileName" type="String" required_ />
 		<cfset var qryResult = QueryNew(Variables.ResultFields) />
 
 		<cfset local.FileData = FileRead(Arguments.FileName) />
@@ -318,8 +318,8 @@
 
 
 	<cffunction name="QueryAppend" returntype="void" output=false access="private">
-		<cfargument name="QueryOne" type="Query" required />
-		<cfargument name="QueryTwo" type="Query" required />
+		<cfargument name="QueryOne" type="Query" required_ />
+		<cfargument name="QueryTwo" type="Query" required_ />
 
 		<cfset var OrigRow = QueryOne.RecordCount />
 
