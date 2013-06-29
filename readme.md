@@ -1,4 +1,4 @@
-QueryParam Scanner v0.7.5
+QueryParam Scanner v0.8 (RC)
 
 
 DESCRIPTION
@@ -13,10 +13,10 @@ variables.
 STATUS
 ======
 
-**This is a dev version of qpScanner, see master branch for stable release.**
+**This is a release candidate of qpScanner, see master branch for stable release.**
 
-Version: v0.7.5
-Released: 2013-01-08
+Version: v0.8 (RC)
+Released: 2013-06-29
 
 To check latest release, visit http://sorcerersisle.com/projects:qpscanner.html
 
