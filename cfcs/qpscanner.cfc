@@ -42,6 +42,7 @@
 			, killCfTag        = new cfregex( '(?si)<cf[a-z]{2,}[^>]*+>' ) <!--- Deliberately excludes Custom Tags and CFX --->
 			, killOrderBy      = new cfregex( '(?si)\bORDER BY\b.*?$' )
 			, killBuiltIn      = new cfregex( '(?si)##(#ListChangeDelims(This.BuiltInFunctions,'|')#)\([^)]*\)##' )
+			, killEscapedHash  = new cfregex ('(?:##{2})++')
 			, findScopes       = new cfregex( '(?si)(?<=##([a-z]{1,20}\()?)[^\(##<]+?(?=\.[^##<]+?##)' )
 			, findQueryName    = new cfregex( '(?<=\bname\s{0,99}=\s{0,99})(?:"[^"]++"|''[^'']++''|[^"''\s]++)' )
 			, Newline          = new cfregex( chr(10) )
@@ -221,6 +222,8 @@
 			<cfif NOT This.scanBuiltInFunc>
 				<cfset rekCode = Variables.Regexes['killBuiltIn'].replace( rekCode , '' )/>
 			</cfif>
+
+			<cfset rekCode =  Variables.Regexes['killEscapedHash'].replace( rekCode , '' ) />
 
 			<cfif (NOT find( '##' , rekCode ))
 				OR (NOT This.scanQoQ AND Variables.Regexes['isQueryOfQuery'].matches( CurMatch.Match ) )
