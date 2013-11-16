@@ -22,7 +22,7 @@
 		<cfargument name="dottedPath" type="string" />
 		<cfreturn len(dottedPath)
 			? super.cfcFilePath(ArgumentCollection=Arguments)
-			: expandPath('./')
+			: ''
 			/>
 	</cffunction>
 
