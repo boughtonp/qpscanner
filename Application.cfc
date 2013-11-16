@@ -1,7 +1,7 @@
 <cfcomponent output="false" extends="framework">
 	<cfsetting showdebugoutput=false />
 
-	<cfset This.Name = "qpscanner_v0.8-rc@#CGI.SERVER_NAME#"/>
+	<cfset This.Name = "qpscanner_v0.8-rc@#CGI.SERVER_NAME#_#hash(getCurrentTemplatePath())#"/>
 	<cfset This.SessionManagement = true/>
 
 	<cfset Variables.Framework =
