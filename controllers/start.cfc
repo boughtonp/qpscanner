@@ -22,4 +22,10 @@ component
 	}
 
 
+	function error(rc)
+	{
+		request.layout = rc.OutputFormat EQ 'html';
+	}
+
+
 }
