@@ -37,7 +37,7 @@
 
 		<cfset Variables.Regexes =
 			{ findQueries      = new cfregex( '(?si)(?:<cfquery\b)(?:[^<]++|<(?!/cfquery>))+(?=</cfquery>)' )
-			, isQueryOfQuery   = new cfregex( '(?si)dbtype\s*=\s*["'']query["'']' )
+			, isQueryOfQuery   = new cfregex( '(?si)(?<=\s)dbtype\s*=\s*(["'']?)query\1' )
 			, killParams       = new cfregex( '(?si)<cfqueryparam[^>]++>' )
 			, killCfTag        = new cfregex( '(?si)<cf[a-z]{2,}[^>]*+>' ) <!--- Deliberately excludes Custom Tags and CFX --->
 			, killOrderBy      = new cfregex( '(?si)\bORDER BY\b.*?$' )
@@ -226,7 +226,7 @@
 			<cfset rekCode =  Variables.Regexes['killEscapedHash'].replace( rekCode , '' ) />
 
 			<cfif (NOT find( '##' , rekCode ))
-				OR (NOT This.scanQoQ AND Variables.Regexes['isQueryOfQuery'].matches( CurMatch.Match ) )
+				OR (NOT This.scanQoQ AND Variables.Regexes['isQueryOfQuery'].matches( QueryTagCode , 'partial' ) )
 				>
 				<cfcontinue />
 			</cfif>
