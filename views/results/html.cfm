@@ -24,7 +24,7 @@
 				--->
 				<label for="#FileId#">#FileName#</label>
 				<span class="summary">
-					- <strong class="alert">#QueryAlertCount#</strong> queries to check:
+					- <strong class="alert">#QueryAlertCount#</strong> quer#iif(QueryAlertCount eq 1, "y", "ies")# to check:
 				</span>
 				<small class="id">#FileId#</small>
 			</dt>
