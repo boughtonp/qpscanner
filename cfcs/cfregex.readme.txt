@@ -1,10 +1,10 @@
 cfRegex v0.1.003-qp
-www.cfregex.net
+https://www.sorcerersisle.com/software/cfregex
 
 NOTE:
-This is a partial cfRegex for use with qpScanner, and is licensed as part of qpScanner under the GPL.
+This is a partial cfRegex for use with qpScanner, and is licensed as part of qpScanner under the GPLv3.
 
-For the full version of cfRegex, available under the LGPL license, visit the website.
+For the full version of cfRegex, available under the LGPL license, visit https://www.sorcerersisle.com/software/cfregex
 
 
 
@@ -26,7 +26,7 @@ Released: 2012-05-31
 
 DOCUMENTATION & HELP
 ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
-Please see http://www.cfregex.net for the latest documentation and for
+Please see https://docs.sorcerersisle.com/cfregex for the latest documentation and for
 details on how to get help.
 
 

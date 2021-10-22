@@ -1,22 +1,23 @@
-<cfcomponent output="false" displayname="qpscanner v0.7.5">
+<!--- qpscanner v0.8 | (c) Peter Boughton | License: GPLv3 | Website: https://www.sorcerersisle.com/software/qpscanner --->
+<cfcomponent output=false>
 
+	<cffunction name="init" returntype="any" output=false access="public">
+		<cfargument name="StartingDir"           type="String"  required_       hint="Directory to begin scanning the contents of." />
+		<cfargument name="OutputFormat"          type="String"  default="html"  hint="Format of scan results: [html,wddx]" />
+		<cfargument name="RequestTimeout"        type="Numeric" default="-1"    hint="Override Request Timeout, -1 to ignore" />
+		<cfargument name="recurse"               type="Boolean" default=false   hint="Also scan sub-directories?" />
+		<cfargument name="Exclusions"            type="String"  default=""      hint="Exclude files & directories matching this regex." />
+		<cfargument name="scanOrderBy"           type="Boolean" default=true    hint="Include ORDER BY statements in scan results?" />
+		<cfargument name="scanQoQ"               type="Boolean" default=true    hint="Include Query of Queries in scan results?" />
+		<cfargument name="scanBuiltInFunc"       type="Boolean" default=true    hint="Include Built-in Functions in scan results?" />
+		<cfargument name="showScopeInfo"         type="Boolean" default=true    hint="Show scope information in scan results?" />
+		<cfargument name="highlightClientScopes" type="Boolean" default=true    hint="Highlight scopes with greater risk?" />
+		<cfargument name="ClientScopes"          type="String"  default="form,url,client,cookie" hint="Scopes considered client scopes." />
+		<cfargument name="NumericFunctions"      type="String"  default="val,year,month,day,hour,minute,second,asc,dayofweek,dayofyear,daysinyear,quarter,week,fix,int,round,ceiling,gettickcount,len,min,max,pi,arraylen,listlen,structcount,listvaluecount,listvaluecountnocase,rand,randrange" />
+		<cfargument name="BuiltInFunctions"      type="String"  default="now,#Arguments.NumericFunctions#" />
+		<cfargument name="ReturnSqlSegments"     type="Boolean" default=false   hint="Include separate SELECT/FROM/WHERE/etc in result data?" />
 
-	<cffunction name="init" returntype="any" output="false" access="public">
-		<cfargument name="StartingDir"           type="String"  required        hint="Directory to begin scanning the contents of."/>
-		<cfargument name="OutputFormat"          type="String"  default="html"  hint="Format of scan results: [html,wddx]"/>
-		<cfargument name="RequestTimeout"        type="Numeric" default="-1"    hint="Override Request Timeout, -1 to ignore"/>
-		<cfargument name="recurse"               type="Boolean" default="false" hint="Also scan sub-directories?"/>
-		<cfargument name="Exclusions"            type="String"  default=""      hint="Exclude files & directories matching this regex."/>
-		<cfargument name="scanOrderBy"           type="Boolean" default="true"  hint="Include ORDER BY statements in scan results?"/>
-		<cfargument name="scanQoQ"               type="Boolean" default="true"  hint="Include Query of Queries in scan results?"/>
-		<cfargument name="scanBuiltInFunc"       type="Boolean" default="true"  hint="Include Built-in Functions in scan results?"/>
-		<cfargument name="showScopeInfo"         type="Boolean" default="true"  hint="Show scope information in scan results?"/>
-		<cfargument name="highlightClientScopes" type="Boolean" default="true"  hint="Highlight scopes with greater risk?"/>
-		<cfargument name="ClientScopes"          type="String"  default="form,url,client,cookie" hint="Scopes considered client scopes."/>
-		<cfargument name="NumericFunctions"      type="String"  default="val,year,month,day,hour,minute,second,asc,dayofweek,dayofyear,daysinyear,quarter,week,fix,int,round,ceiling,gettickcount,len,min,max,pi,arraylen,listlen,structcount,listvaluecount,listvaluecountnocase,rand,randrange"/>
-		<cfargument name="BuiltInFunctions"      type="String"  default="now,#Arguments.NumericFunctions#"/>
-
-		<cfloop item="local.Arg" collection="#Arguments#">
+		<cfloop item="local.Arg" collection=#Arguments# >
 			<cfset This[Arg] = Arguments[Arg]/>
 		</cfloop>
 
@@ -30,25 +31,70 @@
 			, Time          = 0
 			}/>
 
-		<cfset This.Timeout = false/>
+		<cfset This.Timeout = false />
 
-		<cfset Variables.ResultFields = "FileId,FileName,QueryAlertCount,QueryTotalCount,QueryId,QueryName,QueryStartLine,QueryEndLine,ScopeList,ContainsClientScope,QueryCode" />
-		<cfset Variables.AlertData = QueryNew(Variables.ResultFields)/>
+		<cfset Variables.ResultFields = "FileId,FileName,QueryAlertCount,QueryTotalCount,QueryId,QueryName,QueryStartLine,QueryEndLine,ScopeList,ContainsClientScope,QueryCode,FilteredCode" />
 
 		<cfset Variables.Regexes =
 			{ findQueries      = new cfregex( '(?si)(?:<cfquery\b)(?:[^<]++|<(?!/cfquery>))+(?=</cfquery>)' )
-			, isQueryOfQuery   = new cfregex( '(?si)dbtype\s*=\s*["'']query["'']' )
+			, isQueryOfQuery   = new cfregex( '(?si)(?<=\s)dbtype\s*=\s*(["'']?)query\1' )
 			, killParams       = new cfregex( '(?si)<cfqueryparam[^>]++>' )
 			, killCfTag        = new cfregex( '(?si)<cf[a-z]{2,}[^>]*+>' ) <!--- Deliberately excludes Custom Tags and CFX --->
 			, killOrderBy      = new cfregex( '(?si)\bORDER BY\b.*?$' )
 			, killBuiltIn      = new cfregex( '(?si)##(#ListChangeDelims(This.BuiltInFunctions,'|')#)\([^)]*\)##' )
+			, killEscapedHash  = new cfregex ('(?:##{2})++')
 			, findScopes       = new cfregex( '(?si)(?<=##([a-z]{1,20}\()?)[^\(##<]+?(?=\.[^##<]+?##)' )
 			, findQueryName    = new cfregex( '(?<=\bname\s{0,99}=\s{0,99})(?:"[^"]++"|''[^'']++''|[^"''\s]++)' )
 			, Newline          = new cfregex( chr(10) )
 			}/>
 
+		<cfif This.ReturnSqlSegments >
+			<cfset Variables.ResultFields &= ',QuerySegments' />
+			<cfset var SegKeywords = '(?i:SELECT|FROM|WHERE|GROUP BY|HAVING|ORDER BY)' />
+
+			<cfsavecontent variable="Variables.Regexes.Segs"><cfoutput>
+				(?x)
+
+				## Segment names must be preceeded by newline or paren.
+				## This helps avoid strings/variables causing confusion.
+				(?<=
+					(?:^|[()\n])
+					\s{0,99}
+				)
+				#SegKeywords#[\s(]
+
+				## This part needs to lazily consume content until it finds
+				## the next segment, whilst also making sure it's not
+				## dealing with a [bracketed] column name.
+				##
+				## For performance, splitting out whitespace and parens
+				## allows the negative charset to match possessively
+				## without breaking the overall laziness.
+				(?:
+					[^\[\s()]++
+				|
+					[\s()]+
+				|
+					\[(?!\s*#SegKeywords#\s*\])
+				)+?
+
+				## A segment must be ended by either end of string or
+				## another segment.
+				(?=
+					$
+				|
+					(?<=[)\s])#SegKeywords#[\s(]
+				)
+			</cfoutput></cfsavecontent>
+			<cfset Variables.Regexes.Segs = new cfregex(trim(Variables.Regexes.Segs)) />
+
+			<cfset Variables.Regexes.SegNames = new cfregex('(?<=^#SegKeywords#)') />
+		</cfif>
+
+		<cfset Variables.AlertData = QueryNew(Variables.ResultFields)/>
+
 		<cfset Variables.Exclusions = [] />
-		<cfloop index="local.CurrentExclusion" list="#This.Exclusions#" delimiters=";">
+		<cfloop index="local.CurrentExclusion" list=#This.Exclusions# delimiters=";" >
 			<cfset ArrayAppend( Variables.Exclusions , new cfregex(CurrentExclusion) ) />
 		</cfloop>
 
@@ -56,12 +102,11 @@
 	</cffunction>
 
 
-
-	<cffunction name="go" returntype="any" output="false" access="public">
+	<cffunction name="go" returntype="Struct" output=false access="public">
 		<cfset var StartTime = getTickCount()/>
 
 		<cfif This.RequestTimeout GT 0>
-			<cfsetting requesttimeout="#This.RequestTimeout#"/>
+			<cfsetting requesttimeout=#This.RequestTimeout# />
 		</cfif>
 
 		<cftry>
@@ -71,7 +116,7 @@
 			<!--- If timeout occurs, ignore error and proceed. --->
 			<cfcatch>
 				<cfif find('timeout',cfcatch.message)>
-					<cfset This.Timeout = True/>
+					<cfset This.Timeout = true />
 				<cfelse>
 					<cfrethrow/>
 				</cfif>
@@ -90,25 +135,24 @@
 	</cffunction>
 
 
-
-	<cffunction name="scan" returntype="void" output="false" access="public">
-		<cfargument name="DirName" type="string" required />
+	<cffunction name="scan" returntype="void" output=false access="private">
+		<cfargument name="DirName" type="string" required_ />
 
 		<cfif DirectoryExists(Arguments.DirName)>
 
 			<cfdirectory
-				name="local.qryDir"
-				directory="#Arguments.DirName#"
-				sort="type ASC,name ASC"
+				name      = "local.qryDir"
+				directory = #Arguments.DirName#
+				sort      = "type ASC,name ASC"
 			/>
 
 			<cfloop query="qryDir">
 				<cfset var CurrentTarget = Arguments.DirName & '/' & Name />
 
-				<cfset var process = true/>
-				<cfloop index="local.CurrentExclusion" array=#Variables.Exclusions#>
+				<cfset var process = true />
+				<cfloop index="local.CurrentExclusion" array=#Variables.Exclusions# >
 					<cfif CurrentExclusion.matches( CurrentTarget )>
-						<cfset process = false/>
+						<cfset process = false />
 						<cfbreak />
 					</cfif>
 				</cfloop>
@@ -127,7 +171,7 @@
 						<cfset var qryCurData = hunt( CurrentTarget )/>
 
 						<cfif qryCurData.RecordCount>
-							<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
+							<cfset QueryAppend( Variables.AlertData , qryCurData )/>
 						</cfif>
 
 					</cfif>
@@ -142,29 +186,35 @@
 			<cfset var qryCurData = hunt( This.StartingDir )/>
 
 			<cfif qryCurData.RecordCount>
-				<cfset Variables.AlertData = QueryAppend( Variables.AlertData , qryCurData )/>
+				<cfset QueryAppend( Variables.AlertData , qryCurData )/>
 			</cfif>
+
+		<cfelse>
+
+			<cfthrow
+				message = "Specified path [#Arguments.DirName#] cannot be accessed or does not exist."
+				type    = "qpscanner.qpscanner.Scan.InvalidPath"
+			/>
 		</cfif>
 
 	</cffunction>
 
 
+	<cffunction name="hunt" returntype="Query" output=false access="private">
+		<cfargument name="FileName" type="String" required_ />
+		<cfset var qryResult = QueryNew(Variables.ResultFields) />
 
-	<cffunction name="hunt" returntype="Query" output="false">
-		<cfargument name="FileName"    type="String" required />
-		<cfset var qryResult = QueryNew(Variables.ResultFields)/>
+		<cfset local.FileData = FileRead(Arguments.FileName) />
 
-		<cffile action="read" file="#Arguments.FileName#" variable="local.FileData"/>
+		<cfset var Matches = Variables.Regexes['findQueries'].find( text=FileData , returntype='info' ) />
 
-		<cfset var Matches = Variables.Regexes['findQueries'].find( text=FileData , returntype='info' )/>
-
-		<cfloop index="CurMatch" array="#Matches#">
+		<cfloop index="CurMatch" array=#Matches# >
 
 			<cfset var QueryTagCode = ListFirst( CurMatch.Match , '>' ) />
 			<cfset var QueryCode    = ListRest( CurMatch.Match , '>' ) />
 
 			<cfset var rekCode = Variables.Regexes['killParams'].replace( QueryCode , '' )/>
-			<cfset rekCode = Variables.Regexes['killCfTag'].replace( rekCode , '' )/>
+			<cfset rekCode     = Variables.Regexes['killCfTag'].replace( rekCode , '' )/>
 
 			<cfif NOT This.scanOrderBy>
 				<cfset rekCode = Variables.Regexes['killOrderBy'].replace( rekCode , '' )/>
@@ -173,35 +223,69 @@
 				<cfset rekCode = Variables.Regexes['killBuiltIn'].replace( rekCode , '' )/>
 			</cfif>
 
+			<cfset rekCode =  Variables.Regexes['killEscapedHash'].replace( rekCode , '' ) />
+
 			<cfif (NOT find( '##' , rekCode ))
-				OR (NOT This.scanQoQ AND Variables.Regexes['isQueryOfQuery'].matches( CurMatch.Match ) )
+				OR (NOT This.scanQoQ AND Variables.Regexes['isQueryOfQuery'].matches( QueryTagCode , 'partial' ) )
 				>
 				<cfcontinue />
 			</cfif>
 
 			<cfset var CurRow = QueryAddRow(qryResult)/>
 
-			<cfset qryResult.QueryCode[CurRow] = QueryCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ) />
-			<cfset qryResult.QueryCode[CurRow] = qryResult.QueryCode[CurRow].replaceAll( Chr(13) , Chr(10) ) />
+			<cfset qryResult.QueryCode[CurRow]    = QueryCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ).replaceAll( Chr(13) , Chr(10) ) />
+			<cfset qryResult.FilteredCode[CurRow] = rekCode.replaceAll( Chr(13)&Chr(10) , Chr(10) ).replaceAll( Chr(13) , Chr(10) ) />
 
 			<cfif This.showScopeInfo >
 				<cfset var ScopesFound = {} />
 
-				<cfloop index="local.CurScope" array="#Variables.Regexes['findScopes'].match( rekCode )#">
+				<cfloop index="local.CurScope" array=#Variables.Regexes['findScopes'].match( rekCode )# >
 					<cfset ScopesFound[CurScope] = true />
 				</cfloop>
 
-				<cfset qryResult.ContainsClientScope[CurRow] = false/>
+				<cfset qryResult.ContainsClientScope[CurRow] = false />
 				<cfif This.highlightClientScopes>
-					<cfloop index="local.CurrentScope" array="#This.ClientScopes#">
+					<cfloop index="local.CurrentScope" array=#This.ClientScopes# >
 						<cfif StructKeyExists( ScopesFound , CurrentScope )>
-							<cfset qryResult.ContainsClientScope[CurRow] = true/>
+							<cfset qryResult.ContainsClientScope[CurRow] = true />
 							<cfbreak/>
 						</cfif>
 					</cfloop>
 				</cfif>
 
 				<cfset qryResult.ScopeList[CurRow] = StructKeyList(ScopesFound) />
+			</cfif>
+
+			<cfif This.ReturnSqlSegments AND findNoCase('select',ListFirst(qryResult.QueryCode[CurRow],chr(10))) >
+				<cftry>
+					<cfset var RawSegs = Regexes.Segs.match(qryResult.QueryCode[CurRow]) />
+					<cfset var SegStruct = {} />
+
+					<cfcatch type="java.lang.StackOverflowError">
+						<!---
+							There's a chance of failing on complex
+							queries; if so, ignore and continue scan.
+						--->
+						<cfset var RawSegs = [] />
+						<cfset var SegStruct = "failed" />
+					</cfcatch>
+				</cftry>
+
+				<cfloop index="local.CurSeg" array=#RawSegs# >
+					<cfset CurSeg = Variables.Regexes.SegNames.split( text=trim(CurSeg) , limit=1 ) />
+					<cfset CurSeg = {Name=CurSeg[1],Code=CurSeg[2]} />
+
+					<cfif StructKeyExists(SegStruct,CurSeg.Name)>
+						<cfif isSimpleValue(SegStruct[CurSeg.Name])>
+							<cfset SegStruct[CurSeg.Name] = [ SegStruct[CurSeg.Name] ] />
+						</cfif>
+						<cfset ArrayAppend(SegStruct[CurSeg.Name],trim(CurSeg.Code)) />
+					<cfelse>
+						<cfset SegStruct[CurSeg.Name] = trim(CurSeg.Code) />
+					</cfif>
+				</cfloop>
+
+				<cfset qryResult.QuerySegments[CurRow] = SegStruct />
 			</cfif>
 
 			<cfset var BeforeQueryCode = left( FileData , CurMatch.Pos ) />
@@ -212,14 +296,13 @@
 			<cfset qryResult.QueryStartLine[CurRow] = StartLine/>
 			<cfset qryResult.QueryEndLine[CurRow]   = StartLine + LineCount />
 			<cfset qryResult.QueryName[CurRow]      = ArrayToList(Variables.Regexes['findQueryName'].match(text=QueryTagCode,limit=1)) />
-			<cfset qryResult.QueryId[CurRow]        = createUuid() />
+			<cfset qryResult.QueryId[CurRow]        = hash(QueryTagCode&QueryCode,'SHA') />
 			<cfif NOT Len( qryResult.QueryName[CurRow] )>
 				<cfset qryResult.QueryName[CurRow] = "[unknown]"/>
 			</cfif>
-
 		</cfloop>
 
-		<cfset var CurFileId = createUUID()/>
+		<cfset var CurFileId = hash( Arguments.FileName & hash(FileData,'SHA') , 'SHA' ) />
 		<cfloop query="qryResult">
 			<cfset qryResult.FileId[qryResult.CurrentRow]          = CurFileId />
 			<cfset qryResult.FileName[qryResult.CurrentRow]        = Arguments.FileName />
@@ -237,19 +320,19 @@
 	</cffunction>
 
 
+	<cffunction name="QueryAppend" returntype="void" output=false access="private">
+		<cfargument name="QueryOne" type="Query" required_ />
+		<cfargument name="QueryTwo" type="Query" required_ />
 
-	<cffunction name="QueryAppend" returntype="Query" output="false" access="private">
-		<cfargument name="QueryOne" type="Query" required />
-		<cfargument name="QueryTwo" type="Query" required />
-		<!--- Bug fix for CF9 --->
-		<cfif NOT Arguments.QueryOne.RecordCount><cfreturn Arguments.QueryTwo /></cfif>
-		<cfif NOT Arguments.QueryTwo.RecordCount><cfreturn Arguments.QueryOne /></cfif>
-		<!--- / --->
-		<cfquery name="local.Result" dbtype="Query">
-			SELECT * FROM Arguments.QueryOne
-			UNION SELECT * FROM Arguments.QueryTwo
-		</cfquery>
-		<cfreturn Result/>
+		<cfset var OrigRow = QueryOne.RecordCount />
+
+		<cfset QueryAddRow( QueryOne , QueryTwo.RecordCount )/>
+
+		<cfloop index="local.CurCol" list=#Variables.ResultFields# >
+			<cfloop query="QueryTwo">
+				<cfset QueryOne[CurCol][OrigRow+CurrentRow] = QueryTwo[CurCol][CurrentRow] />
+			</cfloop>
+		</cfloop>
 	</cffunction>
 
 
