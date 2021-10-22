@@ -1,4 +1,4 @@
-<!--- qpscanner v0.8-rc | (c) Peter Boughton | License: GPLv3 | Website: https://www.sorcerersisle.com/software/qpscanner --->
+<!--- qpscanner v0.8 | (c) Peter Boughton | License: GPLv3 | Website: https://www.sorcerersisle.com/software/qpscanner --->
 <cfcomponent output=false>
 
 	<cffunction name="init" returntype="any" output=false access="public">

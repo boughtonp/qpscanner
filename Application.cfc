@@ -1,7 +1,7 @@
 <cfcomponent output="false" extends="framework">
 	<cfsetting showdebugoutput=false />
 
-	<cfset This.Name = "qpscanner_v0.8-rc@#CGI.SERVER_NAME#_#hash(getCurrentTemplatePath())#"/>
+	<cfset This.Name = "qpscanner_v0.8@#CGI.SERVER_NAME#_#hash(getCurrentTemplatePath())#"/>
 	<cfset This.SessionManagement = true/>
 
 	<cfset Variables.Framework =
@@ -29,7 +29,7 @@
 
 	<cffunction name="setupApplication" output="false">
 
-		<cfset Application.Version = "0.8 (RC)"/>
+		<cfset Application.Version = "0.8"/>
 
 		<cfset Application.Cfcs =
 			{ Settings = new cfcs.settings( ConfigDirectory : expandPath('./config') )
