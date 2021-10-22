@@ -5,10 +5,10 @@
 	under the terms of the GPL v3 license.</p>
 
 	<p>The project's web page is:
-		<a href="http://sorcerersisle.com/projects:qpscanner.html">http://sorcerersisle.com/projects:qpscanner.html</a>
+		<a href="https://www.sorcerersisle.com/software/qpscanner">https://www.sorcerersisle.com/software/qpscanner</a>
 
 	<p>The source code is available at:
-		<a href="https://github.com/boughtonp/qpscanner">https://github.com/boughtonp/qpscanner</a>
+		<a href="https://code.sorcerersisle.com/qpscanner">https://code.sorcerersisle.com/qpscanner</a>
 
 	<p>This is version #Application.Version# of QueryParam Scanner.</p>
 

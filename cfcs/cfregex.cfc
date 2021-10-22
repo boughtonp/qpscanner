@@ -1,4 +1,4 @@
-<!--- cfregex v0.1.003-qp | (c) Peter Boughton | License: GPLv3 | Website: cfregex.net --->
+<!--- cfregex v0.1.003-qp | (c) Peter Boughton | License: GPLv3 | Website: https://www.sorcerersisle.com/software/cfregex --->
 <cfcomponent output=false >
 
 
@@ -522,7 +522,7 @@
 		The callbacks are identical except for returntype.
 		(For Replace it returns text, for everything else, it returns a boolean.)
 
-		See http://docs.cfregex.net/Callbacks.html
+		See https://docs.sorcerersisle.com/cfregex/Callbacks
 
 		<cffunction name="ReplaceCallback" returntype="String" output="false">
 			<cfargument name="Pos"         type="Numeric" required="true"  hint="The start position of the match."  />
